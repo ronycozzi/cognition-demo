@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCR + LLM en LATAM: el estado del arte en 2026 · Blog Cognition</title>
+  <meta name="description" content="Qué modelos de OCR funcionan en español rioplatense, cuáles fallan con formularios del Estado y cómo logramos 97% de precisión en producción con documentos argentinos reales.">
+  <meta name="theme-color" content="#00D4FF">
+  <meta name="color-scheme" content="dark">
+  <meta name="author" content="Valentina Cruz">
+
+  <link rel="canonical" href="https://www.cognition.com.ar/blog/ocr-llm-latam.html">
+  <link rel="alternate" hreflang="es-AR" href="https://www.cognition.com.ar/blog/ocr-llm-latam.html">
+  <link rel="alternate" hreflang="x-default" href="https://www.cognition.com.ar/blog/ocr-llm-latam.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="OCR + LLM en LATAM: el estado del arte en 2026">
+  <meta property="og:description" content="Qué modelos funcionan en español rioplatense, cuáles fallan con formularios del Estado y cómo logramos 97% de precisión en producción.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&h=630&q=80">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:url" content="https://www.cognition.com.ar/blog/ocr-llm-latam.html">
+  <meta property="og:site_name" content="Cognition">
+  <meta property="article:published_time" content="2026-03-28">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&h=630&q=80">
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="../favicon.svg">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Cognition">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/style.css?v=14">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "OCR + LLM en LATAM: el estado del arte en 2026",
+    "description": "Qué modelos de OCR funcionan en español rioplatense, cuáles fallan con formularios del Estado y cómo logramos 97% de precisión en producción.",
+    "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&h=630&q=80",
+    "datePublished": "2026-03-28",
+    "dateModified": "2026-03-28",
+    "author": {
+      "@type": "Person",
+      "name": "Valentina Cruz",
+      "jobTitle": "Lead ML Engineer",
+      "worksFor": { "@type": "Organization", "name": "Cognition" }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Cognition",
+      "logo": { "@type": "ImageObject", "url": "https://www.cognition.com.ar/logo.svg" }
+    },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.cognition.com.ar/blog/ocr-llm-latam.html" },
+    "keywords": ["OCR", "LLM", "LATAM", "extracción de datos", "documentos", "NLP español"],
+    "articleSection": "Tecnología",
+    "wordCount": 1200,
+    "inLanguage": "es-AR"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://www.cognition.com.ar/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.cognition.com.ar/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "OCR + LLM en LATAM", "item": "https://www.cognition.com.ar/blog/ocr-llm-latam.html" }
+    ]
+  }
+  </script>
+</head>
+<body class="page-inner">
+
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <header role="banner" class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo" aria-label="Cognition · ir al inicio">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#00D4FF" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="8" cy="8" r="1.6" fill="#00D4FF"/><circle cx="20" cy="8" r="1.6" fill="#00D4FF"/><circle cx="14" cy="14" r="1.6" fill="#00D4FF"/><circle cx="8" cy="20" r="1.6" fill="#00D4FF"/><circle cx="20" cy="20" r="1.6" fill="#00D4FF"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="20" y1="8" x2="14" y2="14"/><line x1="14" y1="14" x2="8" y2="20"/><line x1="14" y1="14" x2="20" y2="20"/></g></svg>
+        </span>
+        Cognition
+      </a>
+      <nav class="nav-desktop" aria-label="Navegación principal">
+        <a href="../suite.html">Suite</a>
+        <a href="../servicios.html">Servicios</a>
+        <a href="../casos.html">Casos</a>
+        <a href="../industrias.html">Industrias</a>
+        <a href="index.html" class="current" aria-current="true">Blog</a>
+        <a href="../playground.html">Playground</a>
+        <a href="../contacto.html" class="btn btn-primary btn-sm">Hablar con ventas</a>
+      </nav>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navMobile">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="nav-mobile" id="navMobile" aria-label="Navegación móvil">
+      <a href="../suite.html">Suite</a>
+      <a href="../servicios.html">Servicios</a>
+      <a href="../casos.html">Casos</a>
+      <a href="../industrias.html">Industrias</a>
+      <a href="../nosotros.html">Nosotros</a>
+      <a href="index.html" class="current">Blog</a>
+      <a href="../playground.html">Playground</a>
+      <a href="../contacto.html" class="btn btn-primary">Hablar con ventas</a>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <article class="article-layout" itemscope itemtype="https://schema.org/Article">
+
+      <header class="article-hero">
+        <div class="container">
+          <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <a href="../index.html">Inicio</a>
+            <span aria-hidden="true">›</span>
+            <a href="index.html">Blog</a>
+            <span aria-hidden="true">›</span>
+            <span aria-current="page">OCR + LLM en LATAM</span>
+          </nav>
+          <div class="article-meta">
+            <span class="tag">Tecnología</span>
+            <time class="blog-date" datetime="2026-03-28" itemprop="datePublished">28 de marzo de 2026</time>
+            <span class="blog-readtime">7 min de lectura</span>
+          </div>
+          <h1 class="article-title" itemprop="headline">OCR + LLM en LATAM: el estado del arte en 2026</h1>
+          <p class="article-lead" itemprop="description">Qué modelos funcionan con documentos en español rioplatense, cuáles fallan sistemáticamente con formularios del Estado y cómo combinamos capas de extracción para alcanzar 97% de precisión en producción real. Datos de 18 meses de implementaciones en Argentina, Chile y Uruguay.</p>
+          <div class="article-author" itemprop="author" itemscope itemtype="https://schema.org/Person">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=facearea&facepad=2&w=96&h=96&q=80" alt="Valentina Cruz" class="article-author-photo" loading="eager" decoding="async" width="48" height="48" itemprop="image">
+            <div>
+              <div class="article-author-name" itemprop="name">Valentina Cruz</div>
+              <div class="article-author-role" itemprop="jobTitle">Lead ML Engineer · Cognition</div>
+            </div>
+          </div>
+        </div>
+        <div class="article-hero-img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1400&h=560&q=80"
+            alt="Escaneo de documento con tecnología OCR"
+            class="article-hero-img"
+            loading="eager"
+            decoding="async"
+            width="1400"
+            height="560"
+            itemprop="image"
+          >
+        </div>
+      </header>
+
+      <div class="container">
+        <div class="article-body" itemprop="articleBody">
+
+          <nav class="article-toc" aria-label="Tabla de contenidos">
+            <p class="article-toc-title">En este artículo</p>
+            <ol>
+              <li><a href="#contexto">El contexto documental argentino</a></li>
+              <li><a href="#benchmark">Benchmark de modelos: lo que medimos</a></li>
+              <li><a href="#pipeline">El pipeline de tres capas</a></li>
+              <li><a href="#casos-edge">Casos edge que todo el mundo ignora</a></li>
+              <li><a href="#recomendaciones">Recomendaciones prácticas</a></li>
+            </ol>
+          </nav>
+
+          <h2 id="contexto">El contexto documental argentino</h2>
+          <p>Los benchmarks globales de OCR se construyen principalmente con documentos en inglés, con buena tipografía, escaneos de calidad y formularios estandarizados. El mundo real en Argentina es diferente en aspectos que no son menores.</p>
+          <p>En el sector público argentino conviven documentos de cinco décadas diferentes, desde formularios mecanografiados de los 80 hasta PDFs de la plataforma GDE, pasando por escaneos de escaneos de fotocopias. En el sector privado, las PYME suelen trabajar con facturas tipografiadas en LibreOffice a 72 DPI, remitos manuscritos y certificados con sellos que se superponen al texto.</p>
+          <p>A esto se suma el idioma: el español rioplatense tiene particularidades de acentuación, uso de ñ, y términos regionales (CUIT, CUIL, obra social, padrón AFIP) que los modelos entrenados en corpus genérico de español no manejan tan bien como parece.</p>
+
+          <h2 id="benchmark">Benchmark de modelos: lo que medimos</h2>
+          <p>Durante 2025 y principios de 2026 hicimos un benchmark informal pero sistemático con un corpus de 4.200 documentos argentinos reales (anonimizados) en cinco categorías: facturas, remitos, balances, formularios del Estado e identificaciones personales (DNI, pasaporte).</p>
+
+          <div class="article-callout article-callout--data">
+            <strong>Nuestro corpus de evaluación:</strong> 4.200 documentos · 5 categorías · recolectados de implementaciones reales con datos anonimizados · evaluados en precisión por campo extraído, no por documento completo.
+          </div>
+
+          <p>Las métricas de interés para nosotros no son Character Error Rate (CER) genérico, sino precisión de extracción de campos estructurados: el nombre en una factura, el CUIT, el monto total, la fecha. Un CER del 2% puede ser catastrófico si el 2% de errores cae en el campo de monto.</p>
+          <p>Lo que encontramos:</p>
+          <ul>
+            <li><strong>GPT-4o Vision + prompt estructurado</strong> tiene el mejor rendimiento general en documentos de calidad media a alta (84% de precisión de campo). Falla en documentos de muy baja calidad y tiene latencia de 2–4 segundos por documento.</li>
+            <li><strong>Google Document AI (Form Parser)</strong> es el mejor para formularios estructurados del Estado, específicamente los de AFIP y GDE. Rendimiento peor en texto libre y facturas no estándar.</li>
+            <li><strong>Azure Document Intelligence</strong> tiene el mejor soporte para tablas complejas (balances) pero rendimiento mediocre en texto manuscrito.</li>
+            <li><strong>Tesseract 5 + preprocesamiento agresivo</strong> sigue siendo el más económico y sorprendentemente bueno para facturas tipografiadas simples. Pero falla completamente en documentos escaneados de calidad baja.</li>
+            <li><strong>Claude 3.5 Sonnet + imagen</strong> muestra el mejor razonamiento contextual: cuando el campo no está donde se esperaba, lo infiere del contexto. Pero es el más lento y costoso para volumen.</li>
+          </ul>
+
+          <h2 id="pipeline">El pipeline de tres capas que usamos</h2>
+          <p>El insight más importante del benchmark: ningún modelo es el mejor en todas las categorías. La estrategia ganadora es un pipeline de enrutamiento por tipo de documento.</p>
+
+          <div class="article-numbered-list">
+            <div class="anl-item">
+              <span class="anl-num mono">01</span>
+              <div>
+                <strong>Clasificación del documento</strong><br>
+                Un modelo liviano (fine-tuned sobre LayoutLM) clasifica el documento en su categoría. Esto toma menos de 200ms y determina qué pipeline usar a continuación. Precisión del clasificador: 96%.
+              </div>
+            </div>
+            <div class="anl-item">
+              <span class="anl-num mono">02</span>
+              <div>
+                <strong>Extracción especializada por tipo</strong><br>
+                Facturas → Tesseract + regex pattern matching. Formularios GDE → Google Document AI. Balances → Azure Document Intelligence. Documentos de identidad → GPT-4o Vision. Documentos ambiguos → Claude 3.5 Sonnet con razonamiento explícito.
+              </div>
+            </div>
+            <div class="anl-item">
+              <span class="anl-num mono">03</span>
+              <div>
+                <strong>Validación cruzada y scoring</strong><br>
+                Cada campo extraído pasa por un validador: formato (regex), coherencia interna (¿el total coincide con la suma de items?) y confianza del modelo. Solo los campos con score ≥ 0.85 pasan sin revisión.
+              </div>
+            </div>
+          </div>
+
+          <p>Con este pipeline alcanzamos 97% de precisión de campo en documentos de calidad media-alta y 91% en documentos degradados, con un 8% que va a revisión humana y un tiempo de procesamiento promedio de 1.4 segundos.</p>
+
+          <h2 id="casos-edge">Casos edge que todo el mundo ignora</h2>
+          <p>Estos son los que nos costaron más aprender:</p>
+          <ul>
+            <li><strong>Sellos sobre texto</strong>: los sellos "PAGADO", "ORIGINAL", "COPIA" en facturas físicas. Los modelos de visión los leen antes que el texto que tapan. Solución: segmentación por color antes del OCR.</li>
+            <li><strong>Separadores numéricos argentinos</strong>: punto como separador de miles, coma como decimal. Muchos modelos entrenados en corpus norteamericano los invierten. Siempre post-procesar con normalización regional.</li>
+            <li><strong>Formularios en orientación incorrecta</strong>: un porcentaje sorprendente de documentos escaneados llega girado 90° o 180°. La detección de orientación debe ser paso obligatorio antes del OCR.</li>
+            <li><strong>CUIT vs CUIL</strong>: estructuralmente idénticos, semánticamente diferentes. Los modelos genéricos los confunden. El contexto (factura vs recibo de sueldo) es determinante para la clasificación correcta.</li>
+            <li><strong>Páginas múltiples con lógica entre páginas</strong>: una factura puede tener el encabezado en página 1 y los totales en página 3. Los pipelines que procesan páginas de forma independiente pierden este contexto.</li>
+          </ul>
+
+          <h2 id="recomendaciones">Recomendaciones prácticas</h2>
+          <p>Si estás arrancando con OCR + LLM para documentos argentinos en 2026:</p>
+          <ul>
+            <li>No uses un único modelo para todo. El enrutamiento por tipo de documento te da un 15–20% de mejora en precisión vs el mejor modelo generalista.</li>
+            <li>Construí un corpus de evaluación con documentos reales de tu cliente desde el día uno. Los documentos "representativos" que mandan para el piloto no son los que van a llegar en producción.</li>
+            <li>El preprocesamiento importa más de lo que pensás. La calidad de imagen es el factor más correlacionado con la precisión final.</li>
+            <li>Diseñá el human-in-the-loop desde el inicio. No como fallback de emergencia, sino como parte esperada del proceso para el 5–15% de casos complejos.</li>
+            <li>Medí precisión por campo, no por documento. Un documento con 20 campos "correcto en 19" puede generar un error de negocio igual de grave que uno con todos los campos incorrectos.</li>
+          </ul>
+
+          <div class="article-cta">
+            <h3>¿Estás evaluando OCR + LLM para tu organización?</h3>
+            <p>Hacemos un diagnóstico gratuito de tu caso documental: te decimos qué pipeline conviene, qué precisión esperada podés tener y cuál es el roadmap realista. Sin compromiso.</p>
+            <a href="../contacto.html?from=blog-ocr" class="btn btn-primary btn-arrow">Pedir diagnóstico</a>
+          </div>
+
+        </div>
+
+        <aside class="article-sidebar">
+          <div class="article-share">
+            <p class="article-share-title">Compartir</p>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.cognition.com.ar%2Fblog%2Focr-llm-latam.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm" aria-label="Compartir en LinkedIn">LinkedIn</a>
+          </div>
+          <div class="article-related">
+            <p class="article-related-title">También te puede interesar</p>
+            <a href="agentes-ia-produccion.html" class="article-related-link">Agentes de IA en producción</a>
+            <a href="gobierno-digital-argentina.html" class="article-related-link">Gobierno digital en Argentina</a>
+            <a href="../suite.html#digitaldoc" class="article-related-link">DigitalDoc: OCR + LLM para empresas</a>
+          </div>
+        </aside>
+      </div>
+
+    </article>
+
+  </main>
+
+  <footer role="contentinfo" class="site-footer">
+    <div class="container">
+      <div class="footer-cta">
+        <div class="footer-cta-text">
+          <h2>¿Listo para llevar la IA<br><em>a tu organización?</em></h2>
+          <p>Una conversación de 30 minutos alcanza para entender si tu caso entra en Cognition Suite o si necesitás un trabajo a medida.</p>
+        </div>
+        <div class="footer-cta-actions">
+          <a href="../contacto.html" class="btn btn-primary btn-lg btn-arrow">Hablar con ventas</a>
+          <a href="../suite.html" class="btn btn-outline btn-lg">Ver demo</a>
+        </div>
+      </div>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="../index.html" class="logo">
+            <span class="logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#00D4FF" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="8" cy="8" r="1.6" fill="#00D4FF"/><circle cx="20" cy="8" r="1.6" fill="#00D4FF"/><circle cx="14" cy="14" r="1.6" fill="#00D4FF"/><circle cx="8" cy="20" r="1.6" fill="#00D4FF"/><circle cx="20" cy="20" r="1.6" fill="#00D4FF"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="20" y1="8" x2="14" y2="14"/><line x1="14" y1="14" x2="8" y2="20"/><line x1="14" y1="14" x2="20" y2="20"/></g></svg>
+            </span>
+            Cognition
+          </a>
+          <p>Transformación digital con inteligencia artificial. Acompañamos a empresas y gobiernos.</p>
+          <div class="footer-iso">
+            <span class="tag tag--mute">ISO 9001</span>
+            <span class="tag tag--mute">ISO 27001</span>
+            <span class="tag tag--mute">IQNet</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Producto</div>
+          <a href="../suite.html">Cognition Suite</a>
+          <a href="../suite.html#digitaldoc">DigitalDoc</a>
+          <a href="../industrias.html">Industrias</a>
+          <a href="../casos.html">Casos</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Empresa</div>
+          <a href="../nosotros.html">Nosotros</a>
+          <a href="../servicios.html">Servicios</a>
+          <a href="index.html">Blog</a>
+          <a href="../contacto.html">Contacto</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Contacto</div>
+          <a href="mailto:hola@cognition.com.ar">hola@cognition.com.ar</a>
+          <a href="tel:+5493513841666">+54 9 351 384-1666</a>
+          <p>Córdoba, Argentina</p>
+          <a href="https://www.linkedin.com/company/cognitionhq" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Cognition Software. Todos los derechos reservados.</span>
+        <span><a href="../privacy.html">Privacidad</a> · <a href="../terms.html">Términos</a></span>
+        <span class="footer-tagline">Hecho con propósito en Córdoba, AR</span>
+      </div>
+    </div>
+  </footer>
+
+  <button type="button" class="back-top" id="backTop" aria-label="Volver arriba">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"></polyline></svg>
+  </button>
+
+  <a href="https://wa.me/5493513841666" target="_blank" rel="noopener" class="wa-floating" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.7 17.3L2 22l4.8-1.7A11 11 0 1 0 20.5 3.5zM12 20a8 8 0 0 1-4.1-1.1l-.3-.2-2.8 1 1-2.7-.2-.3A8 8 0 1 1 12 20zm4.5-5.7c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1c-.1.1-.3.2-.5 0-.2-.1-1-.4-1.9-1.1-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.4c.1-.2.2-.3.2-.5 0-.2 0-.4-.1-.5l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3.9 2.5c.1.2 1.6 2.5 4 3.5.6.2 1 .4 1.4.5.6.2 1.1.1 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1z"/></svg>
+  </a>
+
+  <script src="../js/script.js?v=14"></script>
+</body>
+</html>

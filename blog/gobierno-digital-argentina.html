@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gobierno digital en Argentina: cómo pasamos de 3 semanas a 3 días · Blog Cognition</title>
+  <meta name="description" content="El caso completo de transformación de un ministerio provincial: por qué falló el primer intento, qué aprendimos y cómo 14 trámites quedaron digitales en cuatro meses con IA.">
+  <meta name="theme-color" content="#00D4FF">
+  <meta name="color-scheme" content="dark">
+  <meta name="author" content="Luciana Morales">
+
+  <link rel="canonical" href="https://www.cognition.com.ar/blog/gobierno-digital-argentina.html">
+  <link rel="alternate" hreflang="es-AR" href="https://www.cognition.com.ar/blog/gobierno-digital-argentina.html">
+  <link rel="alternate" hreflang="x-default" href="https://www.cognition.com.ar/blog/gobierno-digital-argentina.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Gobierno digital en Argentina: cómo pasamos de 3 semanas a 3 días">
+  <meta property="og:description" content="El caso completo de un ministerio provincial: primer intento fallido, aprendizajes y 14 trámites digitales en cuatro meses.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1531973576160-7125cd663d86?auto=format&fit=crop&w=1200&h=630&q=80">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:url" content="https://www.cognition.com.ar/blog/gobierno-digital-argentina.html">
+  <meta property="og:site_name" content="Cognition">
+  <meta property="article:published_time" content="2026-03-10">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1531973576160-7125cd663d86?auto=format&fit=crop&w=1200&h=630&q=80">
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="../favicon.svg">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Cognition">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/style.css?v=14">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Gobierno digital en Argentina: cómo pasamos de 3 semanas a 3 días",
+    "description": "El caso completo de transformación de un ministerio provincial: por qué falló el primer intento, qué aprendimos y cómo 14 trámites quedaron digitales en cuatro meses.",
+    "image": "https://images.unsplash.com/photo-1531973576160-7125cd663d86?auto=format&fit=crop&w=1200&h=630&q=80",
+    "datePublished": "2026-03-10",
+    "dateModified": "2026-03-10",
+    "author": {
+      "@type": "Person",
+      "name": "Luciana Morales",
+      "jobTitle": "Directora de Proyecto",
+      "worksFor": { "@type": "Organization", "name": "Cognition" }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Cognition",
+      "logo": { "@type": "ImageObject", "url": "https://www.cognition.com.ar/logo.svg" }
+    },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.cognition.com.ar/blog/gobierno-digital-argentina.html" },
+    "keywords": ["gobierno digital", "transformación digital sector público", "GDE", "trámites digitales", "Argentina", "IA gobierno"],
+    "articleSection": "Gobierno",
+    "wordCount": 1350,
+    "inLanguage": "es-AR"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://www.cognition.com.ar/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.cognition.com.ar/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Gobierno digital en Argentina", "item": "https://www.cognition.com.ar/blog/gobierno-digital-argentina.html" }
+    ]
+  }
+  </script>
+</head>
+<body class="page-inner">
+
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <header role="banner" class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo" aria-label="Cognition · ir al inicio">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#00D4FF" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="8" cy="8" r="1.6" fill="#00D4FF"/><circle cx="20" cy="8" r="1.6" fill="#00D4FF"/><circle cx="14" cy="14" r="1.6" fill="#00D4FF"/><circle cx="8" cy="20" r="1.6" fill="#00D4FF"/><circle cx="20" cy="20" r="1.6" fill="#00D4FF"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="20" y1="8" x2="14" y2="14"/><line x1="14" y1="14" x2="8" y2="20"/><line x1="14" y1="14" x2="20" y2="20"/></g></svg>
+        </span>
+        Cognition
+      </a>
+      <nav class="nav-desktop" aria-label="Navegación principal">
+        <a href="../suite.html">Suite</a>
+        <a href="../servicios.html">Servicios</a>
+        <a href="../casos.html">Casos</a>
+        <a href="../industrias.html">Industrias</a>
+        <a href="index.html" class="current" aria-current="true">Blog</a>
+        <a href="../playground.html">Playground</a>
+        <a href="../contacto.html" class="btn btn-primary btn-sm">Hablar con ventas</a>
+      </nav>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navMobile">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="nav-mobile" id="navMobile" aria-label="Navegación móvil">
+      <a href="../suite.html">Suite</a>
+      <a href="../servicios.html">Servicios</a>
+      <a href="../casos.html">Casos</a>
+      <a href="../industrias.html">Industrias</a>
+      <a href="../nosotros.html">Nosotros</a>
+      <a href="index.html" class="current">Blog</a>
+      <a href="../playground.html">Playground</a>
+      <a href="../contacto.html" class="btn btn-primary">Hablar con ventas</a>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <article class="article-layout" itemscope itemtype="https://schema.org/Article">
+
+      <header class="article-hero">
+        <div class="container">
+          <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <a href="../index.html">Inicio</a>
+            <span aria-hidden="true">›</span>
+            <a href="index.html">Blog</a>
+            <span aria-hidden="true">›</span>
+            <span aria-current="page">Gobierno digital en Argentina</span>
+          </nav>
+          <div class="article-meta">
+            <span class="tag">Gobierno</span>
+            <time class="blog-date" datetime="2026-03-10" itemprop="datePublished">10 de marzo de 2026</time>
+            <span class="blog-readtime">11 min de lectura</span>
+          </div>
+          <h1 class="article-title" itemprop="headline">Gobierno digital en Argentina: cómo pasamos de 3 semanas a 3 días</h1>
+          <p class="article-lead" itemprop="description">El caso completo de transformación de un ministerio provincial: por qué el primer intento falló a pesar de tener el presupuesto, qué aprendimos sobre el cambio cultural en el Estado y cómo conseguimos que 14 trámites quedaran completamente digitales en cuatro meses.</p>
+          <div class="article-author" itemprop="author" itemscope itemtype="https://schema.org/Person">
+            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=facearea&facepad=2.5&w=96&h=96&q=80" alt="Luciana Morales" class="article-author-photo" loading="eager" decoding="async" width="48" height="48" itemprop="image">
+            <div>
+              <div class="article-author-name" itemprop="name">Luciana Morales</div>
+              <div class="article-author-role" itemprop="jobTitle">Directora de Proyecto · Cognition</div>
+            </div>
+          </div>
+        </div>
+        <div class="article-hero-img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1531973576160-7125cd663d86?auto=format&fit=crop&w=1400&h=560&q=80"
+            alt="Edificio gubernamental argentino"
+            class="article-hero-img"
+            loading="eager"
+            decoding="async"
+            width="1400"
+            height="560"
+            itemprop="image"
+          >
+        </div>
+      </header>
+
+      <div class="container">
+        <div class="article-body" itemprop="articleBody">
+
+          <nav class="article-toc" aria-label="Tabla de contenidos">
+            <p class="article-toc-title">En este artículo</p>
+            <ol>
+              <li><a href="#contexto">El contexto: un ministerio con voluntad y sin herramientas</a></li>
+              <li><a href="#primer-intento">Por qué falló el primer intento</a></li>
+              <li><a href="#restart">El restart: cambio de estrategia</a></li>
+              <li><a href="#piloto">El piloto de un trámite en 30 días</a></li>
+              <li><a href="#escala">De 1 a 14 trámites en cuatro meses</a></li>
+              <li><a href="#numeros">Los números finales</a></li>
+              <li><a href="#aprendizajes">Qué replicaríamos y qué haríamos diferente</a></li>
+            </ol>
+          </nav>
+
+          <h2 id="contexto">El contexto: un ministerio con voluntad y sin herramientas</h2>
+          <p>A mediados de 2023, el Ministerio de Desarrollo Social de una provincia argentina del interior nos contactó con un problema específico: el tiempo promedio para resolver un trámite de habilitación de merendero comunitario era de 21 días. Los ciudadanos tenían que presentarse físicamente, dejar documentación en papel, esperar la vista de un inspector y luego volver a retirar la resolución. En zonas rurales, eso implicaba dos viajes de más de 100 kilómetros.</p>
+          <p>La voluntad política estaba. El presupuesto también. Habían intentado una digitalización el año anterior con una consultora de Buenos Aires y había fracasado. Llegaron a nosotros porque alguien en el equipo nos conocía de un proyecto anterior.</p>
+
+          <h2 id="primer-intento">Por qué falló el primer intento</h2>
+          <p>Antes de proponer nada, pasamos dos semanas entendiendo qué había pasado con el proyecto anterior. Lo que encontramos es un patrón que vemos repetido en casi todas las iniciativas de gobierno digital que fracasan:</p>
+          <ul>
+            <li><strong>Tecnología primero, proceso después</strong>: el proyecto anterior construyó el formulario digital antes de mapear el proceso real. Cuando el formulario estuvo listo, descubrieron que el proceso tenía 8 pasos que no estaban contemplados.</li>
+            <li><strong>Sin capacitación del equipo interno</strong>: los funcionarios que iban a usar el sistema recibieron un manual de 40 páginas y una sesión de una hora. Nadie les preguntó qué necesitaban.</li>
+            <li><strong>Integración GDE subestimada</strong>: la integración con el sistema GDE provincial fue estimada en 2 semanas y tomó 4 meses. Cuando llegó, el proyecto había perdido el momentum político.</li>
+            <li><strong>Un solo trámite piloto demasiado complejo</strong>: eligieron el trámite más complejo como piloto porque era el más importante. Era lo peor que podían hacer.</li>
+          </ul>
+
+          <div class="article-callout article-callout--warn">
+            <strong>El costo del fracaso anterior:</strong> $2.1M invertidos, cero trámites digitalizados, y lo más difícil de recuperar: el equipo del ministerio con desconfianza hacia cualquier nuevo intento. "Ya probamos eso" es la frase más cara en transformación digital.
+          </div>
+
+          <h2 id="restart">El restart: cambio de estrategia</h2>
+          <p>Nuestra propuesta fue diferente en tres aspectos fundamentales:</p>
+          <p>Primero, empezar con el trámite más simple, no el más importante. El objetivo del piloto no es resolver el problema más grande: es construir confianza, aprender el ambiente técnico real y tener algo que funcione en producción que el equipo pueda mostrar.</p>
+          <p>Segundo, mapear el proceso completo antes de escribir una línea de código. Hicimos talleres con seis áreas del ministerio y con ciudadanos voluntarios que habían pasado por el trámite. El mapa de proceso resultante tenía 34 estados posibles. El formulario original solo contemplaba 8.</p>
+          <p>Tercero, la integración con GDE como dependencia bloqueante desde el día uno. No podíamos construir algo que luego no se pudiera integrar al sistema oficial. Contratamos a alguien con experiencia directa en GDE para el equipo.</p>
+
+          <h2 id="piloto">El piloto de un trámite en 30 días</h2>
+          <p>Elegimos el trámite de "certificación de entidad sin fines de lucro" — no el más pedido, sino el más simple: 4 pasos lineales, sin excepciones, con documentación estandarizada.</p>
+          <p>En 30 días tenía:</p>
+          <ul>
+            <li>Formulario digital con validación en tiempo real (DNI, CUIT, formato de adjuntos)</li>
+            <li>OCR automático de la documentación requerida (acta constitutiva, balance, poder notarial)</li>
+            <li>Workflow interno con notificaciones por email al ciudadano en cada cambio de estado</li>
+            <li>Panel del funcionario con todos los expedientes y sus estados</li>
+            <li>Integración read-only con GDE para verificar que no existía expediente previo del mismo solicitante</li>
+          </ul>
+          <p>No era perfecto. Pero funcionaba. Y el equipo del ministerio lo vio funcionar con casos reales antes de que terminara el primer mes.</p>
+
+          <h2 id="escala">De 1 a 14 trámites en cuatro meses</h2>
+          <p>El éxito del piloto cambió la dinámica. Los funcionarios que habían sido los más escépticos empezaron a pedir cuándo iba a estar su área. Eso no tiene precio.</p>
+          <p>Los siguientes 13 trámites los hicimos en tres oleadas de 4–5 trámites simultáneos, priorizados por volumen y complejidad. En cada oleada mejoramos la plataforma basándonos en lo que el equipo interno nos reportaba.</p>
+          <p>Lo que aceleró la escala:</p>
+          <ul>
+            <li><strong>Templates reutilizables</strong>: después del trámite 3, el 70% del código de cada nuevo trámite era configuración, no programación nueva.</li>
+            <li><strong>El equipo interno como extensión del equipo</strong>: entrenamos a 3 personas del ministerio que terminaron siendo los implementadores de los últimos 4 trámites bajo nuestra supervisión.</li>
+            <li><strong>Feedback rápido</strong>: reunión semanal de 30 minutos con el equipo completo. Cada bug reportado tenía fix en menos de 48 horas. La confianza se construye en el tiempo de respuesta.</li>
+          </ul>
+
+          <h2 id="numeros">Los números finales</h2>
+          <div class="article-metrics">
+            <div class="article-metric">
+              <div class="article-metric-value">3,2 días</div>
+              <div class="article-metric-label">Tiempo promedio de resolución (era 21 días)</div>
+            </div>
+            <div class="article-metric">
+              <div class="article-metric-value">92%</div>
+              <div class="article-metric-label">Reducción del uso de papel</div>
+            </div>
+            <div class="article-metric">
+              <div class="article-metric-value">+180K</div>
+              <div class="article-metric-label">Trámites procesados en el primer año</div>
+            </div>
+            <div class="article-metric">
+              <div class="article-metric-value">4,8/5</div>
+              <div class="article-metric-label">Satisfacción ciudadana (encuesta NPS)</div>
+            </div>
+          </div>
+
+          <h2 id="aprendizajes">Qué replicaríamos y qué haríamos diferente</h2>
+          <p><strong>Replicaríamos:</strong> el enfoque de piloto simple primero, el mapa de proceso participativo, la integración de alguien con conocimiento del sistema legacy desde el inicio, y el entrenamiento del equipo interno como implementadores.</p>
+          <p><strong>Haríamos diferente:</strong> el onboarding ciudadano. Subestimamos cuántas personas iban a necesitar ayuda para usar el sistema por primera vez. En los primeros meses hubo carga sobre el equipo de atención al ciudadano presencial. Lo resolvimos con un chatbot de asistencia y tutoriales en video, pero llegamos tarde.</p>
+          <p>El otro aspecto que mejoraríamos: la documentación técnica para el equipo de mantenimiento del ministerio. Entregamos un manual, pero debería haber sido un programa de transferencia de 8 semanas, no un documento.</p>
+
+          <div class="article-cta">
+            <h3>¿Tenés un proyecto de gobierno digital en mente?</h3>
+            <p>Trabajamos con organismos públicos de todos los niveles. Entendemos GDE, AFIP, firma digital y los tiempos de la gestión pública. Hablemos antes de que arranques.</p>
+            <a href="../contacto.html?from=blog-gobierno" class="btn btn-primary btn-arrow">Hablar con el equipo</a>
+          </div>
+
+        </div>
+
+        <aside class="article-sidebar">
+          <div class="article-share">
+            <p class="article-share-title">Compartir</p>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.cognition.com.ar%2Fblog%2Fgobierno-digital-argentina.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm" aria-label="Compartir en LinkedIn">LinkedIn</a>
+          </div>
+          <div class="article-related">
+            <p class="article-related-title">También te puede interesar</p>
+            <a href="ocr-llm-latam.html" class="article-related-link">OCR + LLM en LATAM: el estado del arte</a>
+            <a href="agentes-ia-produccion.html" class="article-related-link">Agentes de IA en producción</a>
+            <a href="../industrias.html" class="article-related-link">Soluciones para el sector público</a>
+          </div>
+        </aside>
+      </div>
+
+    </article>
+
+  </main>
+
+  <footer role="contentinfo" class="site-footer">
+    <div class="container">
+      <div class="footer-cta">
+        <div class="footer-cta-text">
+          <h2>¿Listo para llevar la IA<br><em>a tu organización?</em></h2>
+          <p>Una conversación de 30 minutos alcanza para entender si tu caso entra en Cognition Suite o si necesitás un trabajo a medida.</p>
+        </div>
+        <div class="footer-cta-actions">
+          <a href="../contacto.html" class="btn btn-primary btn-lg btn-arrow">Hablar con ventas</a>
+          <a href="../suite.html" class="btn btn-outline btn-lg">Ver demo</a>
+        </div>
+      </div>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="../index.html" class="logo">
+            <span class="logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#00D4FF" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="8" cy="8" r="1.6" fill="#00D4FF"/><circle cx="20" cy="8" r="1.6" fill="#00D4FF"/><circle cx="14" cy="14" r="1.6" fill="#00D4FF"/><circle cx="8" cy="20" r="1.6" fill="#00D4FF"/><circle cx="20" cy="20" r="1.6" fill="#00D4FF"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="20" y1="8" x2="14" y2="14"/><line x1="14" y1="14" x2="8" y2="20"/><line x1="14" y1="14" x2="20" y2="20"/></g></svg>
+            </span>
+            Cognition
+          </a>
+          <p>Transformación digital con inteligencia artificial.</p>
+          <div class="footer-iso">
+            <span class="tag tag--mute">ISO 9001</span>
+            <span class="tag tag--mute">ISO 27001</span>
+            <span class="tag tag--mute">IQNet</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Producto</div>
+          <a href="../suite.html">Cognition Suite</a>
+          <a href="../suite.html#digitaldoc">DigitalDoc</a>
+          <a href="../industrias.html">Industrias</a>
+          <a href="../casos.html">Casos</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Empresa</div>
+          <a href="../nosotros.html">Nosotros</a>
+          <a href="../servicios.html">Servicios</a>
+          <a href="index.html">Blog</a>
+          <a href="../contacto.html">Contacto</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Contacto</div>
+          <a href="mailto:hola@cognition.com.ar">hola@cognition.com.ar</a>
+          <a href="tel:+5493513841666">+54 9 351 384-1666</a>
+          <p>Córdoba, Argentina</p>
+          <a href="https://www.linkedin.com/company/cognitionhq" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Cognition Software. Todos los derechos reservados.</span>
+        <span><a href="../privacy.html">Privacidad</a> · <a href="../terms.html">Términos</a></span>
+        <span class="footer-tagline">Hecho con propósito en Córdoba, AR</span>
+      </div>
+    </div>
+  </footer>
+
+  <button type="button" class="back-top" id="backTop" aria-label="Volver arriba">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"></polyline></svg>
+  </button>
+
+  <a href="https://wa.me/5493513841666" target="_blank" rel="noopener" class="wa-floating" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.7 17.3L2 22l4.8-1.7A11 11 0 1 0 20.5 3.5zM12 20a8 8 0 0 1-4.1-1.1l-.3-.2-2.8 1 1-2.7-.2-.3A8 8 0 1 1 12 20zm4.5-5.7c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1c-.1.1-.3.2-.5 0-.2-.1-1-.4-1.9-1.1-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.4c.1-.2.2-.3.2-.5 0-.2 0-.4-.1-.5l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3.9 2.5c.1.2 1.6 2.5 4 3.5.6.2 1 .4 1.4.5.6.2 1.1.1 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1z"/></svg>
+  </a>
+
+  <script src="../js/script.js?v=14"></script>
+</body>
+</html>
