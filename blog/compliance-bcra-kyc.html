@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compliance BCRA: lo que todo CTO de fintech necesita saber sobre KYC automatizado · Blog Cognition</title>
+  <meta name="description" content="Circular A 7642, validación biométrica, extracción de balances con LLM. Qué acepta el regulador argentino, qué necesita firma humana y cómo diseñar el pipeline KYC correcto.">
+  <meta name="theme-color" content="#00D4FF">
+  <meta name="color-scheme" content="dark">
+  <meta name="author" content="Sebastián Páez">
+
+  <link rel="canonical" href="https://www.cognition.com.ar/blog/compliance-bcra-kyc.html">
+  <link rel="alternate" hreflang="es-AR" href="https://www.cognition.com.ar/blog/compliance-bcra-kyc.html">
+  <link rel="alternate" hreflang="x-default" href="https://www.cognition.com.ar/blog/compliance-bcra-kyc.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Compliance BCRA: lo que todo CTO de fintech necesita saber sobre KYC automatizado">
+  <meta property="og:description" content="Circular A 7642, validación biométrica, extracción de balances con LLM. El pipeline KYC correcto para el mercado argentino.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1200&h=630&q=80">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:url" content="https://www.cognition.com.ar/blog/compliance-bcra-kyc.html">
+  <meta property="og:site_name" content="Cognition">
+  <meta property="article:published_time" content="2026-02-18">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1200&h=630&q=80">
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="../favicon.svg">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Cognition">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/style.css?v=14">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Compliance BCRA: lo que todo CTO de fintech necesita saber sobre KYC automatizado",
+    "description": "Circular A 7642, validación biométrica, extracción de balances con LLM. Qué acepta el regulador, qué necesita firma humana y cómo diseñar el pipeline correcto.",
+    "image": "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1200&h=630&q=80",
+    "datePublished": "2026-02-18",
+    "dateModified": "2026-02-18",
+    "author": {
+      "@type": "Person",
+      "name": "Sebastián Páez",
+      "jobTitle": "Arquitecto de Soluciones",
+      "worksFor": { "@type": "Organization", "name": "Cognition" }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Cognition",
+      "logo": { "@type": "ImageObject", "url": "https://www.cognition.com.ar/logo.svg" }
+    },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.cognition.com.ar/blog/compliance-bcra-kyc.html" },
+    "keywords": ["KYC", "BCRA", "compliance fintech", "onboarding digital", "validación biométrica", "Argentina fintech"],
+    "articleSection": "Finanzas",
+    "wordCount": 1150,
+    "inLanguage": "es-AR"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://www.cognition.com.ar/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.cognition.com.ar/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Compliance BCRA y KYC", "item": "https://www.cognition.com.ar/blog/compliance-bcra-kyc.html" }
+    ]
+  }
+  </script>
+</head>
+<body class="page-inner">
+
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <header role="banner" class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo" aria-label="Cognition · ir al inicio">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#00D4FF" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="8" cy="8" r="1.6" fill="#00D4FF"/><circle cx="20" cy="8" r="1.6" fill="#00D4FF"/><circle cx="14" cy="14" r="1.6" fill="#00D4FF"/><circle cx="8" cy="20" r="1.6" fill="#00D4FF"/><circle cx="20" cy="20" r="1.6" fill="#00D4FF"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="20" y1="8" x2="14" y2="14"/><line x1="14" y1="14" x2="8" y2="20"/><line x1="14" y1="14" x2="20" y2="20"/></g></svg>
+        </span>
+        Cognition
+      </a>
+      <nav class="nav-desktop" aria-label="Navegación principal">
+        <a href="../suite.html">Suite</a>
+        <a href="../servicios.html">Servicios</a>
+        <a href="../casos.html">Casos</a>
+        <a href="../industrias.html">Industrias</a>
+        <a href="index.html" class="current" aria-current="true">Blog</a>
+        <a href="../playground.html">Playground</a>
+        <a href="../contacto.html" class="btn btn-primary btn-sm">Hablar con ventas</a>
+      </nav>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navMobile">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="nav-mobile" id="navMobile" aria-label="Navegación móvil">
+      <a href="../suite.html">Suite</a>
+      <a href="../servicios.html">Servicios</a>
+      <a href="../casos.html">Casos</a>
+      <a href="../industrias.html">Industrias</a>
+      <a href="../nosotros.html">Nosotros</a>
+      <a href="index.html" class="current">Blog</a>
+      <a href="../playground.html">Playground</a>
+      <a href="../contacto.html" class="btn btn-primary">Hablar con ventas</a>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <article class="article-layout" itemscope itemtype="https://schema.org/Article">
+
+      <header class="article-hero">
+        <div class="container">
+          <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <a href="../index.html">Inicio</a>
+            <span aria-hidden="true">›</span>
+            <a href="index.html">Blog</a>
+            <span aria-hidden="true">›</span>
+            <span aria-current="page">Compliance BCRA y KYC</span>
+          </nav>
+          <div class="article-meta">
+            <span class="tag">Finanzas</span>
+            <time class="blog-date" datetime="2026-02-18" itemprop="datePublished">18 de febrero de 2026</time>
+            <span class="blog-readtime">8 min de lectura</span>
+          </div>
+          <h1 class="article-title" itemprop="headline">Compliance BCRA: lo que todo CTO de fintech necesita saber sobre KYC automatizado</h1>
+          <p class="article-lead" itemprop="description">Circular A 7642, validación biométrica, extracción de balances con LLM. Qué acepta el regulador argentino, qué todavía necesita intervención humana, y cómo diseñar el pipeline KYC correcto para operar en el mercado financiero argentino sin fricciones regulatorias.</p>
+          <div class="article-author" itemprop="author" itemscope itemtype="https://schema.org/Person">
+            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=facearea&facepad=2.5&w=96&h=96&q=80" alt="Sebastián Páez" class="article-author-photo" loading="eager" decoding="async" width="48" height="48" itemprop="image">
+            <div>
+              <div class="article-author-name" itemprop="name">Sebastián Páez</div>
+              <div class="article-author-role" itemprop="jobTitle">Arquitecto de Soluciones · Cognition</div>
+            </div>
+          </div>
+        </div>
+        <div class="article-hero-img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1400&h=560&q=80"
+            alt="Dashboard de compliance financiero"
+            class="article-hero-img"
+            loading="eager"
+            decoding="async"
+            width="1400"
+            height="560"
+            itemprop="image"
+          >
+        </div>
+      </header>
+
+      <div class="container">
+        <div class="article-body" itemprop="articleBody">
+
+          <nav class="article-toc" aria-label="Tabla de contenidos">
+            <p class="article-toc-title">En este artículo</p>
+            <ol>
+              <li><a href="#marco">El marco regulatorio actual</a></li>
+              <li><a href="#que-acepta">Qué acepta el BCRA como evidencia digital</a></li>
+              <li><a href="#pipeline">El pipeline KYC en la práctica</a></li>
+              <li><a href="#scoring">Scoring crediticio con LLM</a></li>
+              <li><a href="#errores">Los errores más comunes de implementación</a></li>
+              <li><a href="#checklist">Checklist de cumplimiento</a></li>
+            </ol>
+          </nav>
+
+          <div class="article-callout article-callout--warn">
+            <strong>Aviso legal:</strong> Este artículo es orientativo y no constituye asesoramiento legal. Para implementar un proceso KYC en una entidad supervisada por el BCRA, siempre consultá con tu área legal y el Oficial de Cumplimiento de tu organización. Las circulares se actualizan: verificá siempre la versión vigente en el sitio del BCRA.
+          </div>
+
+          <h2 id="marco">El marco regulatorio actual</h2>
+          <p>El Banco Central de la República Argentina (BCRA) regula el proceso de identificación de clientes a través de la Circular A 7642 (y sus complementarias), que establece los requisitos mínimos para el onboarding digital de personas físicas y jurídicas en entidades financieras.</p>
+          <p>La normativa fue actualizada en 2023 para incorporar explícitamente la posibilidad de onboarding 100% digital — sin presencia física — siempre que se cumplan tres requisitos: validación de identidad con documento oficial, verificación de vida (liveness check) y cruce de información con bases de datos de riesgo.</p>
+          <p>Lo que muchos CTOs de fintech no saben: el BCRA no exige que el proceso sea manual, pero sí exige que sea auditable. Cada paso del proceso debe quedar registrado con timestamp, el modelo o proveedor utilizado, el score de confianza y el resultado. Esto tiene implicancias directas sobre cómo diseñar el sistema.</p>
+
+          <h2 id="que-acepta">Qué acepta el BCRA como evidencia digital</h2>
+          <p>Lo que el regulador acepta actualmente para identificación de personas físicas:</p>
+          <ul>
+            <li><strong>DNI argentino (frente + dorso)</strong>: imagen o escaneo, con validación de autenticidad (chip NFC si disponible, análisis de tampering si no).</li>
+            <li><strong>Pasaporte internacional</strong>: con zona MRZ legible y validación biométrica.</li>
+            <li><strong>Selfie con liveness</strong>: la normativa acepta liveness pasivo (movimiento natural de parpadeo) y activo (seguir instrucciones). El proveedor debe poder justificar el método ante auditoría.</li>
+            <li><strong>Validación facial contra documento</strong>: comparación biométrica con score mínimo aceptado (no especificado en la circular, pero el consenso del mercado es 85% de match).</li>
+          </ul>
+          <p>Lo que todavía NO acepta sin intervención humana:</p>
+          <ul>
+            <li>Personas jurídicas con estructura compleja (fondos, fideicomisos, sociedades extranjeras)</li>
+            <li>Clientes PEP (Personas Expuestas Políticamente)</li>
+            <li>Operaciones de alto riesgo según el perfil de la entidad</li>
+            <li>Casos en los que el score de confianza de cualquiera de los pasos cae por debajo del umbral definido</li>
+          </ul>
+
+          <h2 id="pipeline">El pipeline KYC en la práctica</h2>
+          <p>El pipeline que implementamos en Nucleo Bank — que permitió reducir el tiempo de alta de cuenta de 3 días a 7 minutos — tiene los siguientes pasos:</p>
+
+          <div class="article-numbered-list">
+            <div class="anl-item">
+              <span class="anl-num mono">01</span>
+              <div>
+                <strong>Captura y preprocesamiento del DNI</strong><br>
+                El usuario fotografía ambas caras del DNI. Un módulo de preprocesamiento evalúa calidad de imagen (iluminación, ángulo, desenfoque) y rechaza antes de intentar OCR si la calidad es insuficiente. Esto reduce el 40% de los errores en el paso siguiente.
+              </div>
+            </div>
+            <div class="anl-item">
+              <span class="anl-num mono">02</span>
+              <div>
+                <strong>Extracción de datos + detección de tampering</strong><br>
+                GPT-4o Vision extrae los datos estructurados del DNI (nombre, apellido, CUIL, fecha de nacimiento, número de trámite). Paralelamente, un modelo especializado analiza señales de tampering (fuentes inconsistentes, micropatrones de impresión). Score de confianza por campo y score global de autenticidad.
+              </div>
+            </div>
+            <div class="anl-item">
+              <span class="anl-num mono">03</span>
+              <div>
+                <strong>Cruce con RENAPER y AFIP</strong><br>
+                Los datos extraídos se cruzan en tiempo real con los servicios del RENAPER (validación de identidad) y AFIP (estado fiscal del CUIL). Esto es el núcleo legal del proceso: sin este cruce, el onboarding no cumple la circular.
+              </div>
+            </div>
+            <div class="anl-item">
+              <span class="anl-num mono">04</span>
+              <div>
+                <strong>Liveness check + match biométrico</strong><br>
+                El usuario completa el liveness check (proveedor externo certificado). El sistema compara la foto resultante contra la foto del DNI. Score de match facial.
+              </div>
+            </div>
+            <div class="anl-item">
+              <span class="anl-num mono">05</span>
+              <div>
+                <strong>Scoring crediticio</strong><br>
+                Ver sección siguiente.
+              </div>
+            </div>
+            <div class="anl-item">
+              <span class="anl-num mono">06</span>
+              <div>
+                <strong>Decisión y registro</strong><br>
+                Si todos los scores superan los umbrales, la apertura de cuenta es automática. Si algún score falla, el caso va a revisión humana con todo el contexto. Cada paso queda registrado en el log de auditoría con timestamp y scores.
+              </div>
+            </div>
+          </div>
+
+          <h2 id="scoring">Scoring crediticio con LLM</h2>
+          <p>El paso más novedoso y también el más debatido: usar LLMs para extraer datos de balances y estados financieros como input del modelo de scoring.</p>
+          <p>Los balances en Argentina llegan en formatos absolutamente heterogéneos: Word exportado a PDF, PDF nativo, imagen de la hoja firmada, incluso fotos. Un extractor tradicional de PDF falla en el 60% de los casos. GPT-4o con un prompt estructurado específico para balances argentinos (con las cuentas del Plan General de Cuentas BCRA como referencia) alcanza 91% de precisión en la extracción de los campos que importan para scoring.</p>
+
+          <div class="article-callout article-callout--info">
+            <strong>Nuestra arquitectura de scoring:</strong> datos extraídos del balance (LLM) + buró de crédito (Veraz/Nosis) + historial de transacciones si el cliente es preexistente + variables comportamentales del proceso de onboarding. Modelo ensemble en producción con reentrenamiento trimestral.
+          </div>
+
+          <h2 id="errores">Los errores más comunes de implementación</h2>
+          <ul>
+            <li><strong>No documentar los umbrales de decisión</strong>: el BCRA puede pedir en una auditoría por qué un cliente fue aprobado. "El modelo lo aprobó" no es respuesta suficiente. Los umbrales y su justificación deben estar documentados.</li>
+            <li><strong>Proveedor de liveness sin certificación</strong>: no todos los proveedores de liveness tienen el mismo nivel de rigor anti-spoofing. Pedí el documento de metodología antes de integrar.</li>
+            <li><strong>Log de auditoría incompleto</strong>: el log debe incluir el input (imagen, documento), el modelo usado, la versión del modelo, el score y la decisión. Si cambiás de modelo, el log debe reflejar eso.</li>
+            <li><strong>No tener un proceso de fallback humano escalable</strong>: los casos complejos siempre van a existir. Si tu equipo de revisión manual no puede crecer con el volumen, el cuello de botella es peor que el proceso manual original.</li>
+          </ul>
+
+          <h2 id="checklist">Checklist de cumplimiento mínimo</h2>
+          <div class="article-checklist">
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Validación de DNI con cruce RENAPER activo.</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Liveness check con proveedor documentado.</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Match biométrico foto-selfie con score registrado.</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Cruce con listas de sancionados (OFAC, ONU, local).</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Log de auditoría por paso con timestamp y versión de modelo.</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Proceso documentado de revisión manual para casos PEP y alta complejidad.</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Consentimiento del usuario para tratamiento biométrico (Ley 25.326).</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Política de retención y eliminación de datos biométricos.</div>
+          </div>
+
+          <div class="article-cta">
+            <h3>¿Estás construyendo un proceso KYC para el mercado argentino?</h3>
+            <p>Hemos implementado KYC digital para banca regional, fintech y cooperativas financieras con auditoría BCRA aprobada. Te podemos acompañar desde el diseño hasta la validación regulatoria.</p>
+            <a href="../contacto.html?from=blog-kyc" class="btn btn-primary btn-arrow">Hablar con el equipo</a>
+          </div>
+
+        </div>
+
+        <aside class="article-sidebar">
+          <div class="article-share">
+            <p class="article-share-title">Compartir</p>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.cognition.com.ar%2Fblog%2Fcompliance-bcra-kyc.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm" aria-label="Compartir en LinkedIn">LinkedIn</a>
+          </div>
+          <div class="article-related">
+            <p class="article-related-title">También te puede interesar</p>
+            <a href="ocr-llm-latam.html" class="article-related-link">OCR + LLM en LATAM: el estado del arte</a>
+            <a href="agentes-ia-produccion.html" class="article-related-link">Agentes de IA en producción</a>
+            <a href="../industrias.html" class="article-related-link">Soluciones para el sector financiero</a>
+          </div>
+        </aside>
+      </div>
+
+    </article>
+
+  </main>
+
+  <footer role="contentinfo" class="site-footer">
+    <div class="container">
+      <div class="footer-cta">
+        <div class="footer-cta-text">
+          <h2>¿Listo para llevar la IA<br><em>a tu organización?</em></h2>
+          <p>Una conversación de 30 minutos alcanza para entender si tu caso entra en Cognition Suite o si necesitás un trabajo a medida.</p>
+        </div>
+        <div class="footer-cta-actions">
+          <a href="../contacto.html" class="btn btn-primary btn-lg btn-arrow">Hablar con ventas</a>
+          <a href="../suite.html" class="btn btn-outline btn-lg">Ver demo</a>
+        </div>
+      </div>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="../index.html" class="logo">
+            <span class="logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#00D4FF" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="8" cy="8" r="1.6" fill="#00D4FF"/><circle cx="20" cy="8" r="1.6" fill="#00D4FF"/><circle cx="14" cy="14" r="1.6" fill="#00D4FF"/><circle cx="8" cy="20" r="1.6" fill="#00D4FF"/><circle cx="20" cy="20" r="1.6" fill="#00D4FF"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="20" y1="8" x2="14" y2="14"/><line x1="14" y1="14" x2="8" y2="20"/><line x1="14" y1="14" x2="20" y2="20"/></g></svg>
+            </span>
+            Cognition
+          </a>
+          <p>Transformación digital con inteligencia artificial.</p>
+          <div class="footer-iso">
+            <span class="tag tag--mute">ISO 9001</span>
+            <span class="tag tag--mute">ISO 27001</span>
+            <span class="tag tag--mute">IQNet</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Producto</div>
+          <a href="../suite.html">Cognition Suite</a>
+          <a href="../suite.html#digitaldoc">DigitalDoc</a>
+          <a href="../industrias.html">Industrias</a>
+          <a href="../casos.html">Casos</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Empresa</div>
+          <a href="../nosotros.html">Nosotros</a>
+          <a href="../servicios.html">Servicios</a>
+          <a href="index.html">Blog</a>
+          <a href="../contacto.html">Contacto</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Contacto</div>
+          <a href="mailto:hola@cognition.com.ar">hola@cognition.com.ar</a>
+          <a href="tel:+5493513841666">+54 9 351 384-1666</a>
+          <p>Córdoba, Argentina</p>
+          <a href="https://www.linkedin.com/company/cognitionhq" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Cognition Software. Todos los derechos reservados.</span>
+        <span><a href="../privacy.html">Privacidad</a> · <a href="../terms.html">Términos</a></span>
+        <span class="footer-tagline">Hecho con propósito en Córdoba, AR</span>
+      </div>
+    </div>
+  </footer>
+
+  <button type="button" class="back-top" id="backTop" aria-label="Volver arriba">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"></polyline></svg>
+  </button>
+
+  <a href="https://wa.me/5493513841666" target="_blank" rel="noopener" class="wa-floating" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.7 17.3L2 22l4.8-1.7A11 11 0 1 0 20.5 3.5zM12 20a8 8 0 0 1-4.1-1.1l-.3-.2-2.8 1 1-2.7-.2-.3A8 8 0 1 1 12 20zm4.5-5.7c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1c-.1.1-.3.2-.5 0-.2-.1-1-.4-1.9-1.1-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.4c.1-.2.2-.3.2-.5 0-.2 0-.4-.1-.5l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3.9 2.5c.1.2 1.6 2.5 4 3.5.6.2 1 .4 1.4.5.6.2 1.1.1 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1z"/></svg>
+  </a>
+
+  <script src="../js/script.js?v=14"></script>
+</body>
+</html>

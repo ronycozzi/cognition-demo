@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentes de IA en producción: lo que nadie te cuenta del mantenimiento · Blog Cognition</title>
+  <meta name="description" content="Deployar un agente es la parte fácil. Lo difícil es mantenerlo estable cuando los LLMs cambian, los datos corrompen y el negocio pide más. Lecciones de producción real.">
+  <meta name="theme-color" content="#00D4FF">
+  <meta name="color-scheme" content="dark">
+  <meta name="author" content="Matías Ríos">
+
+  <link rel="canonical" href="https://www.cognition.com.ar/blog/agentes-ia-produccion.html">
+  <link rel="alternate" hreflang="es-AR" href="https://www.cognition.com.ar/blog/agentes-ia-produccion.html">
+  <link rel="alternate" hreflang="x-default" href="https://www.cognition.com.ar/blog/agentes-ia-produccion.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Agentes de IA en producción: lo que nadie te cuenta del mantenimiento">
+  <meta property="og:description" content="Deployar un agente es la parte fácil. Lo difícil es mantenerlo estable cuando los LLMs cambian y el negocio pide más.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?auto=format&fit=crop&w=1200&h=630&q=80">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:url" content="https://www.cognition.com.ar/blog/agentes-ia-produccion.html">
+  <meta property="og:site_name" content="Cognition">
+  <meta property="article:author" content="Matías Ríos">
+  <meta property="article:published_time" content="2026-04-14">
+  <meta property="article:tag" content="Agentes IA">
+  <meta property="article:tag" content="Producción">
+  <meta property="article:tag" content="LLM">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agentes de IA en producción: lo que nadie te cuenta">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?auto=format&fit=crop&w=1200&h=630&q=80">
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="../favicon.svg">
+  <link rel="manifest" href="../manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Cognition">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/style.css?v=14">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Agentes de IA en producción: lo que nadie te cuenta del mantenimiento",
+    "description": "Deployar un agente es la parte fácil. Lo difícil es mantenerlo estable cuando los LLMs cambian de versión, los datos de entrada corrompen y el negocio pide más casos de uso cada semana.",
+    "image": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?auto=format&fit=crop&w=1200&h=630&q=80",
+    "datePublished": "2026-04-14",
+    "dateModified": "2026-04-14",
+    "author": {
+      "@type": "Person",
+      "name": "Matías Ríos",
+      "jobTitle": "CTO",
+      "worksFor": { "@type": "Organization", "name": "Cognition" }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Cognition",
+      "logo": { "@type": "ImageObject", "url": "https://www.cognition.com.ar/logo.svg" }
+    },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.cognition.com.ar/blog/agentes-ia-produccion.html" },
+    "keywords": ["agentes IA", "LLM producción", "mantenimiento IA", "automatización", "LATAM"],
+    "articleSection": "Ingeniería",
+    "wordCount": 1400,
+    "inLanguage": "es-AR"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://www.cognition.com.ar/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.cognition.com.ar/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Agentes IA en producción", "item": "https://www.cognition.com.ar/blog/agentes-ia-produccion.html" }
+    ]
+  }
+  </script>
+</head>
+<body class="page-inner">
+
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <header role="banner" class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo" aria-label="Cognition · ir al inicio">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#00D4FF" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="8" cy="8" r="1.6" fill="#00D4FF"/><circle cx="20" cy="8" r="1.6" fill="#00D4FF"/><circle cx="14" cy="14" r="1.6" fill="#00D4FF"/><circle cx="8" cy="20" r="1.6" fill="#00D4FF"/><circle cx="20" cy="20" r="1.6" fill="#00D4FF"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="20" y1="8" x2="14" y2="14"/><line x1="14" y1="14" x2="8" y2="20"/><line x1="14" y1="14" x2="20" y2="20"/></g></svg>
+        </span>
+        Cognition
+      </a>
+      <nav class="nav-desktop" aria-label="Navegación principal">
+        <a href="../suite.html">Suite</a>
+        <a href="../servicios.html">Servicios</a>
+        <a href="../casos.html">Casos</a>
+        <a href="../industrias.html">Industrias</a>
+        <a href="index.html" class="current" aria-current="true">Blog</a>
+        <a href="../playground.html">Playground</a>
+        <a href="../contacto.html" class="btn btn-primary btn-sm">Hablar con ventas</a>
+      </nav>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navMobile">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="nav-mobile" id="navMobile" aria-label="Navegación móvil">
+      <a href="../suite.html">Suite</a>
+      <a href="../servicios.html">Servicios</a>
+      <a href="../casos.html">Casos</a>
+      <a href="../industrias.html">Industrias</a>
+      <a href="../nosotros.html">Nosotros</a>
+      <a href="index.html" class="current">Blog</a>
+      <a href="../playground.html">Playground</a>
+      <a href="../contacto.html" class="btn btn-primary">Hablar con ventas</a>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <article class="article-layout" itemscope itemtype="https://schema.org/Article">
+
+      <header class="article-hero">
+        <div class="container">
+          <nav class="breadcrumb" aria-label="Ruta de navegación">
+            <a href="../index.html">Inicio</a>
+            <span aria-hidden="true">›</span>
+            <a href="index.html">Blog</a>
+            <span aria-hidden="true">›</span>
+            <span aria-current="page">Agentes IA en producción</span>
+          </nav>
+          <div class="article-meta">
+            <span class="tag">Ingeniería</span>
+            <time class="blog-date" datetime="2026-04-14" itemprop="datePublished">14 de abril de 2026</time>
+            <span class="blog-readtime">9 min de lectura</span>
+          </div>
+          <h1 class="article-title" itemprop="headline">Agentes de IA en producción: lo que nadie te cuenta del mantenimiento</h1>
+          <p class="article-lead" itemprop="description">Deployar un agente es la parte fácil. Lo difícil es mantenerlo estable cuando los LLMs cambian de versión, los datos de entrada corrompen y el negocio pide más casos de uso cada semana. Acá van las lecciones que no encontrás en los docs.</p>
+          <div class="article-author" itemprop="author" itemscope itemtype="https://schema.org/Person">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=facearea&facepad=2&w=96&h=96&q=80" alt="Matías Ríos" class="article-author-photo" loading="eager" decoding="async" width="48" height="48" itemprop="image">
+            <div>
+              <div class="article-author-name" itemprop="name">Matías Ríos</div>
+              <div class="article-author-role" itemprop="jobTitle">CTO · Cognition</div>
+            </div>
+          </div>
+        </div>
+        <div class="article-hero-img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?auto=format&fit=crop&w=1400&h=560&q=80"
+            alt="Visualización de flujo de un agente de IA"
+            class="article-hero-img"
+            loading="eager"
+            decoding="async"
+            width="1400"
+            height="560"
+            itemprop="image"
+          >
+        </div>
+      </header>
+
+      <div class="container">
+        <div class="article-body" itemprop="articleBody">
+
+          <nav class="article-toc" aria-label="Tabla de contenidos">
+            <p class="article-toc-title">En este artículo</p>
+            <ol>
+              <li><a href="#el-problema">El problema que nadie documenta</a></li>
+              <li><a href="#drift-de-modelos">Drift de modelos: cuando el LLM cambia bajo tus pies</a></li>
+              <li><a href="#datos-sucios">Datos sucios en producción</a></li>
+              <li><a href="#observabilidad">Observabilidad: lo mínimo que necesitás</a></li>
+              <li><a href="#escala">Escalar sin romper</a></li>
+              <li><a href="#checklist">Checklist de mantenimiento mensual</a></li>
+            </ol>
+          </nav>
+
+          <h2 id="el-problema">El problema que nadie documenta</h2>
+          <p>En las últimas dos semanas del año pasado, tres de nuestros clientes tuvieron el mismo problema en producción: el agente que habían validado durante meses empezó a comportarse diferente sin que nadie tocara nada. Un caso tardaba 40 segundos más. Otro generaba respuestas con un tono más formal de repente. El tercero fallaba en documentos que antes procesaba sin errores.</p>
+          <p>Los tres problemas eran distintos, pero el síntoma era el mismo: nadie había modificado el código del agente. Sin embargo, algo había cambiado. Y eso resume perfectamente el desafío de mantener agentes de IA en producción real: el sistema no está solo bajo tu control.</p>
+          <p>En Cognition llevamos más de 30 agentes corriendo en producción en organizaciones de Argentina, Chile y Uruguay. Este artículo es el destilado de lo que aprendimos a los golpes.</p>
+
+          <h2 id="drift-de-modelos">Drift de modelos: cuando el LLM cambia bajo tus pies</h2>
+          <p>El primer vector de inestabilidad no es tu código. Es el modelo.</p>
+          <p>OpenAI, Anthropic, Google — todos actualizan sus modelos de manera continua. Algunas actualizaciones son silenciosas (safety guardrails más estrictos, temperatura de sampling ajustada), otras son anunciadas (versiones mayores). Pero incluso las anunciadas generan comportamiento diferente en tus prompts aunque hayas "fijado" el modelo a <code class="mono">gpt-4o-2024-08-06</code>.</p>
+
+          <div class="article-callout article-callout--warn">
+            <strong>Lo que observamos:</strong> en un agente de extracción de datos de facturas, un cambio silencioso de guardrails hizo que el modelo rechazara documentos con ciertos formatos numéricos argentinos (punto como separador de miles) por interpretar que podían ser datos sensibles. La tasa de éxito bajó del 97% al 81% en 48 horas.
+          </div>
+
+          <p>La solución no es evitar los LLMs de providers externos. La solución es tratarlos como una dependencia externa con su propio contrato de testing:</p>
+          <ul>
+            <li><strong>Suite de regression en golden set</strong>: un conjunto fijo de casos de entrada con salida esperada, que corrés contra cada versión nueva del modelo antes de promoverla.</li>
+            <li><strong>Shadow deployment</strong>: cuando cambiás de modelo, corré la versión nueva en paralelo durante 72 horas. Si la tasa de éxito diverge más del 2%, rollback automático.</li>
+            <li><strong>Versiones explícitas en producción</strong>: nunca uses alias como <code class="mono">gpt-4o-latest</code>. Siempre versión completa. El ahorro de gestionar versiones es menor al costo de un incidente en producción.</li>
+          </ul>
+
+          <h2 id="datos-sucios">Datos sucios en producción</h2>
+          <p>El segundo vector es más predecible pero igualmente subestimado: los datos reales son horribles.</p>
+          <p>En el ambiente de desarrollo trabajaste con documentos "representativos" que preparó el cliente. En producción llegás a los documentos que nadie revisó en 10 años: fotos de PDFs en ángulo, resolución de 72 DPI, hojas con manchas de café, formularios llenados a mano con letra que mezcla imprenta y cursiva. Y eso en el mejor caso.</p>
+          <p>Lo que más nos costó aprender: <em>los documentos extremos no son outliers, son la norma en LATAM</em>. El nivel de estandarización documental en el sector privado argentino es significativamente menor al de Europa o EE.UU. Un agente que no está diseñado para manejar esa variabilidad va a tener una performance en producción muy diferente a la del piloto.</p>
+          <p>Nuestra arquitectura de defensa tiene tres capas:</p>
+
+          <div class="article-numbered-list">
+            <div class="anl-item">
+              <span class="anl-num mono">01</span>
+              <div>
+                <strong>Preprocesamiento con validación de calidad de imagen</strong><br>
+                Antes de enviar al LLM, un módulo liviano (OpenCV + reglas heurísticas) evalúa contraste, DPI y ángulo. Si el documento no pasa el umbral, va a una cola de revisión humana antes de intentar extracción.
+              </div>
+            </div>
+            <div class="anl-item">
+              <span class="anl-num mono">02</span>
+              <div>
+                <strong>Confidence scoring por campo extraído</strong><br>
+                Cada campo del documento tiene un score de confianza. Si el score baja de 0.85, el campo se marca para revisión. No dejamos que el agente "invente" datos con baja confianza.
+              </div>
+            </div>
+            <div class="anl-item">
+              <span class="anl-num mono">03</span>
+              <div>
+                <strong>Human-in-the-loop escalable</strong><br>
+                Los casos de baja confianza no bloquean el pipeline. Van a una cola de revisión interna con el contexto completo. El tiempo de resolución promedio es 4 minutos por caso.
+              </div>
+            </div>
+          </div>
+
+          <h2 id="observabilidad">Observabilidad: lo mínimo que necesitás</h2>
+          <p>Los agentes son cajas negras para tu monitoreo tradicional. No podés usar las métricas de un microservicio estándar (latencia P99, tasa de error HTTP) y asumir que eso te dice si el agente está funcionando bien.</p>
+          <p>Necesitás métricas de negocio, no solo métricas de sistema. El agente puede devolver HTTP 200 con resultado vacío y tu Datadog no va a alertar nada.</p>
+          <p>Las cuatro métricas que medimos en todos nuestros agentes:</p>
+          <ul>
+            <li><strong>Task completion rate</strong>: porcentaje de tareas que el agente completa sin intervención humana. Cualquier caída sostenida de más del 3% en 24h dispara alerta.</li>
+            <li><strong>Confidence distribution</strong>: el histograma de scores de confianza por campo. Si se desplaza a la izquierda, hay algo que cambió en la distribución de documentos de entrada o en el modelo.</li>
+            <li><strong>Human escalation rate</strong>: casos que terminan en revisión humana. Si sube sin que haya aumentado el volumen, el agente está regresando.</li>
+            <li><strong>Cost per task</strong>: tokens consumidos por tarea completada. Si sube, el agente está generando más pasos intermedios de lo normal (síntoma de prompt drift o datos más complejos).</li>
+          </ul>
+
+          <div class="article-callout article-callout--info">
+            <strong>Stack que usamos:</strong> Prometheus para métricas de sistema + un bus de eventos custom (Kafka) donde cada acción del agente emite un evento con su context, confidence score y costo en tokens. Los dashboards corren en Grafana.
+          </div>
+
+          <h2 id="escala">Escalar sin romper</h2>
+          <p>El tercer momento de riesgo es cuando el volumen sube. Un agente que funciona a 500 documentos/día puede colapsar a 5.000 no por un problema de infraestructura, sino por un problema de diseño de prompts.</p>
+          <p>Los LLMs tienen comportamiento diferente bajo contextos muy largos. Si tu agente acumula historial de conversación sin límite, vas a ver degradación de calidad alrededor del token 4.000 de contexto. Esto es especialmente crítico en agentes de tipo "reasoning" que generan cadenas de pensamiento largas.</p>
+          <p>La solución: contexto explícito con límite y resumen. Después de N pasos, el agente hace un resumen comprimido del estado actual y limpia el historial. Parece obvio en el diseño inicial; desaparece en el primer sprint de "features nuevas".</p>
+          <p>La otra trampa de la escala: los rate limits de los providers. A 500 documentos/día vivís tranquilo en el tier estándar. A 5.000 podés toparte con límites de tokens por minuto que no tenías contratados. El problema no es solo la latencia: es que los agentes que manejan mal los errores 429 pueden entrar en bucles de retry que amplifican el problema.</p>
+
+          <h2 id="checklist">Checklist de mantenimiento mensual</h2>
+          <p>Esto es lo que hacemos, literalmente, el primer lunes de cada mes para cada agente en producción:</p>
+
+          <div class="article-checklist">
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Correr golden set contra versión actual del modelo. Documentar cualquier delta.</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Revisar distribución de confidence scores de las últimas 4 semanas. ¿Hay drift?</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Analizar casos de human escalation: ¿hay un patrón nuevo? ¿Hay documentos que se repiten?</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Comparar costo/tarea vs mes anterior. Si subió más del 15%, investigar causa.</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Revisar changelog de providers usados (OpenAI, Anthropic, etc.) en busca de cambios relevantes.</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Actualizar golden set con los 5 casos más difíciles del mes pasado.</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Rotar o renovar API keys según política de seguridad.</div>
+            <div class="acl-item"><span class="acl-icon" aria-hidden="true">✓</span> Verificar que las alertas de observabilidad siguen activas y los umbrales son correctos.</div>
+          </div>
+
+          <p>No es glamoroso. Pero los clientes que tienen este proceso no tienen incidentes de producción. Los que no lo tienen, nos llaman un martes a las 3am.</p>
+
+          <div class="article-cta">
+            <h3>¿Tenés agentes que querés llevar a producción con garantías?</h3>
+            <p>En Cognition diseñamos, implementamos y mantenemos agentes en producción para organizaciones que no pueden permitirse incidentes. Hablemos sobre tu caso.</p>
+            <a href="../contacto.html?from=blog-agentes" class="btn btn-primary btn-arrow">Hablar con el equipo</a>
+          </div>
+
+        </div>
+
+        <aside class="article-sidebar">
+          <div class="article-share">
+            <p class="article-share-title">Compartir</p>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.cognition.com.ar%2Fblog%2Fagentes-ia-produccion.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm" aria-label="Compartir en LinkedIn">LinkedIn</a>
+            <a href="https://twitter.com/intent/tweet?text=Agentes+de+IA+en+producci%C3%B3n%3A+lo+que+nadie+te+cuenta&url=https%3A%2F%2Fwww.cognition.com.ar%2Fblog%2Fagentes-ia-produccion.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm" aria-label="Compartir en Twitter/X">Twitter/X</a>
+          </div>
+          <div class="article-related">
+            <p class="article-related-title">También te puede interesar</p>
+            <a href="ocr-llm-latam.html" class="article-related-link">OCR + LLM en LATAM: el estado del arte en 2026</a>
+            <a href="roi-transformacion-digital.html" class="article-related-link">El mito del ROI inmediato en transformación digital</a>
+            <a href="../casos.html" class="article-related-link">Ver todos los casos de éxito</a>
+          </div>
+        </aside>
+      </div>
+
+    </article>
+
+  </main>
+
+  <footer role="contentinfo" class="site-footer">
+    <div class="container">
+      <div class="footer-cta">
+        <div class="footer-cta-text">
+          <h2>¿Listo para llevar la IA<br><em>a tu organización?</em></h2>
+          <p>Una conversación de 30 minutos alcanza para entender si tu caso entra en Cognition Suite o si necesitás un trabajo a medida.</p>
+        </div>
+        <div class="footer-cta-actions">
+          <a href="../contacto.html" class="btn btn-primary btn-lg btn-arrow">Hablar con ventas</a>
+          <a href="../suite.html" class="btn btn-outline btn-lg">Ver demo</a>
+        </div>
+      </div>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="../index.html" class="logo">
+            <span class="logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#00D4FF" stroke-width="1.6" stroke-linecap="round" fill="none"><circle cx="8" cy="8" r="1.6" fill="#00D4FF"/><circle cx="20" cy="8" r="1.6" fill="#00D4FF"/><circle cx="14" cy="14" r="1.6" fill="#00D4FF"/><circle cx="8" cy="20" r="1.6" fill="#00D4FF"/><circle cx="20" cy="20" r="1.6" fill="#00D4FF"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="20" y1="8" x2="14" y2="14"/><line x1="14" y1="14" x2="8" y2="20"/><line x1="14" y1="14" x2="20" y2="20"/></g></svg>
+            </span>
+            Cognition
+          </a>
+          <p>Transformación digital con inteligencia artificial. Acompañamos a empresas y gobiernos en digitalización, automatización y decisiones basadas en datos.</p>
+          <div class="footer-iso">
+            <span class="tag tag--mute">ISO 9001</span>
+            <span class="tag tag--mute">ISO 27001</span>
+            <span class="tag tag--mute">IQNet</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Producto</div>
+          <a href="../suite.html">Cognition Suite</a>
+          <a href="../suite.html#digitaldoc">DigitalDoc</a>
+          <a href="../industrias.html">Industrias</a>
+          <a href="../casos.html">Casos</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Empresa</div>
+          <a href="../nosotros.html">Nosotros</a>
+          <a href="../servicios.html">Servicios</a>
+          <a href="index.html">Blog</a>
+          <a href="../contacto.html">Contacto</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Contacto</div>
+          <a href="mailto:hola@cognition.com.ar">hola@cognition.com.ar</a>
+          <a href="tel:+5493513841666">+54 9 351 384-1666</a>
+          <p>Córdoba, Argentina</p>
+          <a href="https://www.linkedin.com/company/cognitionhq" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Cognition Software. Todos los derechos reservados.</span>
+        <span><a href="../privacy.html">Privacidad</a> · <a href="../terms.html">Términos</a></span>
+        <span class="footer-tagline">Hecho con propósito en Córdoba, AR</span>
+      </div>
+    </div>
+  </footer>
+
+  <button type="button" class="back-top" id="backTop" aria-label="Volver arriba">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"></polyline></svg>
+  </button>
+
+  <a href="https://wa.me/5493513841666?text=Hola%20Cognition!%20Le%C3%AD%20el%20art%C3%ADculo%20sobre%20agentes%20en%20producci%C3%B3n%20y%20quiero%20saber%20m%C3%A1s." target="_blank" rel="noopener" class="wa-floating" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.7 17.3L2 22l4.8-1.7A11 11 0 1 0 20.5 3.5zM12 20a8 8 0 0 1-4.1-1.1l-.3-.2-2.8 1 1-2.7-.2-.3A8 8 0 1 1 12 20zm4.5-5.7c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1c-.1.1-.3.2-.5 0-.2-.1-1-.4-1.9-1.1-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.4c.1-.2.2-.3.2-.5 0-.2 0-.4-.1-.5l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3.9 2.5c.1.2 1.6 2.5 4 3.5.6.2 1 .4 1.4.5.6.2 1.1.1 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1z"/></svg>
+  </a>
+
+  <script src="../js/script.js?v=14"></script>
+</body>
+</html>

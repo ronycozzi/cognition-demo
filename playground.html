@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Playground · Cognition</title>
+  <meta name="description" content="Probá cómo un agente de IA descompone tu proceso en pasos, herramientas y tiempo estimado. Simulación interactiva en tiempo real.">
+  <meta name="theme-color" content="#00D4FF">
+  <meta name="color-scheme" content="dark">
+  <meta name="author" content="Cognition Software">
+
+  <link rel="canonical" href="https://www.cognition.com.ar/playground.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Agent Playground · Cognition">
+  <meta property="og:description" content="Describí tu proceso. El agente lo descompone en pasos, herramientas y tiempo estimado.">
+  <meta property="og:url" content="https://www.cognition.com.ar/playground.html">
+  <meta property="og:site_name" content="Cognition">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="favicon.svg">
+  <link rel="manifest" href="manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css?v=14">
+
+  <style>
+    /* ── Playground-specific styles ── */
+    .pg-hero {
+      padding: 4rem 0 2rem;
+      text-align: center;
+    }
+    .pg-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: color-mix(in srgb, var(--cyan) 12%, var(--bg-elevated));
+      border: 1px solid color-mix(in srgb, var(--cyan) 30%, transparent);
+      border-radius: 999px;
+      padding: 0.3rem 0.875rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.02em;
+    }
+    .pg-hero-badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: var(--cyan);
+      border-radius: 50%;
+      animation: blink 1.6s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .pg-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .pg-hero-lead {
+      font-size: 1.125rem;
+      color: var(--ink-muted);
+      max-width: 520px;
+      margin: 0 auto 0.5rem;
+      line-height: 1.6;
+    }
+
+    /* ── Layout ── */
+    .pg-layout {
+      display: grid;
+      grid-template-columns: 2fr 3fr;
+      gap: 1.5rem;
+      padding-bottom: 5rem;
+      align-items: start;
+    }
+
+    /* ── Input panel ── */
+    .pg-input-panel {
+      background: var(--bg-elevated);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: sticky;
+      top: 88px;
+    }
+    .pg-input-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+    }
+    .pg-examples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .pg-examples-label {
+      width: 100%;
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      font-weight: 500;
+    }
+    .pg-example-btn {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      font-family: var(--sans);
+    }
+    .pg-example-btn:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .pg-textarea {
+      width: 100%;
+      min-height: 140px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 0.875rem 1rem;
+      font-size: 0.9375rem;
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.6;
+      resize: vertical;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .pg-textarea::placeholder { color: var(--ink-muted); }
+    .pg-textarea:focus {
+      outline: none;
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--cyan) 15%, transparent);
+    }
+    .pg-textarea.is-running { border-color: var(--violet); opacity: 0.7; }
+
+    .pg-run-btn {
+      width: 100%;
+      justify-content: center;
+    }
+    .pg-run-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .pg-disclaimer {
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      line-height: 1.5;
+      text-align: center;
+      opacity: 0.7;
+    }
+
+    /* ── Output panel ── */
+    .pg-output-panel {
+      min-height: 420px;
+    }
+
+    /* Idle state */
+    .pg-idle {
+      background: var(--bg-elevated);
+      border: 1px dashed var(--line);
+      border-radius: var(--radius-lg);
+      padding: 3rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      text-align: center;
+      color: var(--ink-muted);
+      min-height: 420px;
+    }
+    .pg-idle-icon {
+      font-size: 2.5rem;
+      opacity: 0.4;
+    }
+    .pg-idle h3 { font-size: 1rem; font-weight: 600; color: var(--ink-muted); }
+    .pg-idle p { font-size: 0.875rem; max-width: 280px; line-height: 1.55; }
+
+    /* ── Running / result state ── */
+    .pg-result { display: flex; flex-direction: column; gap: 1rem; }
+
+    .pg-result-header {
+      background: var(--bg-elevated);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .pg-result-title {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      flex: 1;
+    }
+    .pg-status-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 0.2rem 0.6rem;
+      background: color-mix(in srgb, var(--cyan) 12%, var(--bg));
+      color: var(--cyan);
+      border: 1px solid color-mix(in srgb, var(--cyan) 25%, transparent);
+    }
+    .pg-status-badge.thinking {
+      background: color-mix(in srgb, var(--violet) 12%, var(--bg));
+      color: var(--violet);
+      border-color: color-mix(in srgb, var(--violet) 25%, transparent);
+    }
+
+    /* Steps */
+    .pg-steps { display: flex; flex-direction: column; gap: 0.625rem; }
+
+    .pg-step {
+      background: var(--bg-elevated);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      display: grid;
+      grid-template-columns: 2.5rem 1fr;
+      gap: 0.875rem;
+      align-items: start;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.35s ease, transform 0.35s ease, border-color 0.2s;
+    }
+    .pg-step.visible { opacity: 1; transform: translateY(0); }
+    .pg-step.is-active { border-color: var(--cyan); }
+
+    .pg-step-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      background: color-mix(in srgb, var(--cyan) 10%, var(--bg));
+      border: 1px solid color-mix(in srgb, var(--cyan) 20%, transparent);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      flex-shrink: 0;
+    }
+    .pg-step-body { min-width: 0; }
+    .pg-step-label {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .pg-step-time {
+      font-size: 0.75rem;
+      font-family: var(--mono);
+      color: var(--cyan);
+      background: color-mix(in srgb, var(--cyan) 10%, var(--bg));
+      border-radius: 4px;
+      padding: 0.1em 0.4em;
+      font-weight: 500;
+    }
+    .pg-step-desc {
+      font-size: 0.875rem;
+      color: var(--ink-muted);
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
+    }
+    .pg-step-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+      margin-top: 0.375rem;
+      opacity: 0;
+      transition: opacity 0.3s 0.15s;
+    }
+    .pg-step.visible .pg-step-tools { opacity: 1; }
+    .pg-tool-chip {
+      font-size: 0.75rem;
+      font-family: var(--mono);
+      font-weight: 500;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 0.15em 0.5em;
+      color: var(--ink-muted);
+    }
+
+    /* Thinking animation */
+    .pg-thinking {
+      background: var(--bg-elevated);
+      border: 1px solid color-mix(in srgb, var(--violet) 30%, var(--line));
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      font-size: 0.9375rem;
+      color: var(--ink-muted);
+    }
+    .pg-dots {
+      display: flex;
+      gap: 5px;
+    }
+    .pg-dots span {
+      width: 7px; height: 7px;
+      background: var(--violet);
+      border-radius: 50%;
+      animation: pgdot 1.2s ease-in-out infinite;
+    }
+    .pg-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .pg-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes pgdot { 0%,80%,100%{transform:scale(0.7);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+
+    /* Summary metrics */
+    .pg-summary {
+      background: linear-gradient(135deg,
+        color-mix(in srgb, var(--violet) 12%, var(--bg-elevated)),
+        color-mix(in srgb, var(--cyan) 8%, var(--bg-elevated)));
+      border: 1px solid color-mix(in srgb, var(--cyan) 20%, var(--line));
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .pg-summary.visible { opacity: 1; transform: translateY(0); }
+    .pg-summary-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .pg-summary-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .pg-metric-card {
+      background: color-mix(in srgb, var(--bg) 60%, transparent);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 0.875rem 0.75rem;
+      text-align: center;
+    }
+    .pg-metric-val {
+      font-size: 1.125rem;
+      font-weight: 800;
+      font-family: var(--mono);
+      color: var(--cyan);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 0.25rem;
+    }
+    .pg-metric-label {
+      font-size: 0.6875rem;
+      color: var(--ink-muted);
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .pg-summary-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+    }
+    .pg-summary-cta p {
+      font-size: 0.9375rem;
+      color: var(--ink-muted);
+      margin: 0;
+    }
+    .pg-summary-cta strong { color: var(--ink); }
+
+    .pg-reset-btn {
+      background: none;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.35rem 0.875rem;
+      font-size: 0.8125rem;
+      color: var(--ink-muted);
+      cursor: pointer;
+      font-family: var(--sans);
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .pg-reset-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* ── How it works strip ── */
+    .pg-how {
+      padding: 3rem 0 4rem;
+      border-top: 1px solid var(--line);
+    }
+    .pg-how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .pg-how-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+    }
+    .pg-how-num {
+      font-size: 2rem;
+      font-weight: 800;
+      font-family: var(--mono);
+      color: var(--cyan);
+      opacity: 0.4;
+      line-height: 1;
+      margin-bottom: 0.75rem;
+    }
+    .pg-how-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .pg-how-card p { font-size: 0.875rem; color: var(--ink-muted); line-height: 1.55; margin: 0; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .pg-layout { grid-template-columns: 1fr; }
+      .pg-input-panel { position: static; }
+      .pg-summary-metrics { grid-template-columns: repeat(2, 1fr); }
+      .pg-how-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .pg-hero { padding: 2.5rem 0 1.5rem; }
+      .pg-summary-metrics { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Agent Playground · Cognition",
+    "url": "https://www.cognition.com.ar/playground.html",
+    "description": "Demo interactiva: describí tu proceso de negocio y un agente de IA lo descompone en pasos, herramientas y tiempo estimado.",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Cognition",
+      "url": "https://www.cognition.com.ar/"
+    }
+  }
+  </script>
+</head>
+<body class="page-playground">
+
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <header role="banner" class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="Cognition · ir al inicio">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g stroke="#00D4FF" stroke-width="1.6" stroke-linecap="round" fill="none">
+              <circle cx="8" cy="8" r="1.6" fill="#00D4FF"/>
+              <circle cx="20" cy="8" r="1.6" fill="#00D4FF"/>
+              <circle cx="14" cy="14" r="1.6" fill="#00D4FF"/>
+              <circle cx="8" cy="20" r="1.6" fill="#00D4FF"/>
+              <circle cx="20" cy="20" r="1.6" fill="#00D4FF"/>
+              <line x1="8" y1="8" x2="14" y2="14"/>
+              <line x1="20" y1="8" x2="14" y2="14"/>
+              <line x1="14" y1="14" x2="8" y2="20"/>
+              <line x1="14" y1="14" x2="20" y2="20"/>
+            </g>
+          </svg>
+        </span>
+        Cognition
+      </a>
+      <nav class="nav-desktop" aria-label="Navegación principal">
+        <a href="suite.html">Suite</a>
+        <a href="servicios.html">Servicios</a>
+        <a href="casos.html">Casos</a>
+        <a href="industrias.html">Industrias</a>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="blog/index.html">Blog</a>
+        <a href="contacto.html" class="btn btn-primary btn-sm">Hablar con ventas</a>
+      </nav>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navMobile">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="nav-mobile" id="navMobile" aria-label="Navegación móvil">
+      <a href="suite.html">Suite</a>
+      <a href="servicios.html">Servicios</a>
+      <a href="casos.html">Casos</a>
+      <a href="industrias.html">Industrias</a>
+      <a href="nosotros.html">Nosotros</a>
+      <a href="faq.html">FAQ</a>
+      <a href="blog/index.html">Blog</a>
+      <a href="contacto.html" class="btn btn-primary">Hablar con ventas</a>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <section class="pg-hero">
+      <div class="container" style="max-width:680px">
+        <div class="pg-hero-badge">Demo interactiva en vivo</div>
+        <h1>Agent<br><em style="color:var(--cyan);font-style:normal">Playground</em></h1>
+        <p class="pg-hero-lead">Describí el proceso que querés automatizar. El agente lo descompone en pasos, herramientas y tiempo estimado — en tiempo real.</p>
+      </div>
+    </section>
+
+    <!-- PLAYGROUND -->
+    <section class="section" style="padding-top:1rem">
+      <div class="container">
+        <div class="pg-layout">
+
+          <!-- LEFT: input -->
+          <div class="pg-input-panel">
+            <div class="pg-input-label">Tu proceso de negocio</div>
+
+            <div class="pg-examples">
+              <span class="pg-examples-label">Ejemplos rápidos:</span>
+              <button class="pg-example-btn" data-prompt="Quiero digitalizar el onboarding de clientes en mi banco: verificar identidad, extraer datos del DNI y aprobar cuentas automáticamente.">KYC bancario</button>
+              <button class="pg-example-btn" data-prompt="Necesito automatizar la cobranza a obras sociales: cruzar prestaciones, detectar rechazos y generar apelaciones sin intervención manual.">Cobranza médica</button>
+              <button class="pg-example-btn" data-prompt="Quiero digitalizar los trámites del ministerio: el ciudadano sube documentos, el sistema los clasifica y el expediente avanza solo.">Trámites gobierno</button>
+              <button class="pg-example-btn" data-prompt="Necesito predecir la demanda de stock por depósito para reducir quiebres y exceso de inventario en mi empresa de logística.">Forecasting stock</button>
+              <button class="pg-example-btn" data-prompt="Quiero un asistente en WhatsApp que responda consultas de postventa, acceda al estado del pedido y escale a humano cuando sea necesario.">Asistente WhatsApp</button>
+              <button class="pg-example-btn" data-prompt="Necesito detectar defectos en mi línea de producción con cámaras industriales e integrar el descarte automático al PLC.">Control de calidad</button>
+            </div>
+
+            <textarea
+              class="pg-textarea"
+              id="pgTextarea"
+              rows="6"
+              placeholder="Ej: «Quiero que mi equipo deje de revisar facturas manualmente. Recibimos 800/día de 12 proveedores distintos…»"
+              aria-label="Describí tu proceso"
+              maxlength="800"
+            ></textarea>
+
+            <button class="btn btn-primary btn-arrow pg-run-btn" id="pgRunBtn" type="button">
+              Ejecutar agente
+            </button>
+
+            <p class="pg-disclaimer">Simulación orientativa. Los datos ingresados no se almacenan ni se envían a ningún servidor.</p>
+          </div>
+
+          <!-- RIGHT: output -->
+          <div class="pg-output-panel" id="pgOutput">
+
+            <!-- IDLE STATE -->
+            <div class="pg-idle" id="pgIdle">
+              <div class="pg-idle-icon" aria-hidden="true">🤖</div>
+              <h3>El agente está esperando</h3>
+              <p>Escribí tu proceso o elegí un ejemplo de la izquierda y presioná <strong>Ejecutar agente</strong>.</p>
+            </div>
+
+            <!-- RESULT STATE (hidden until run) -->
+            <div class="pg-result" id="pgResult" hidden>
+              <!-- populated by JS -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="pg-how">
+      <div class="container">
+        <div class="section-head" style="text-align:center;margin-bottom:0">
+          <h2 class="display" style="font-size:clamp(1.5rem,3vw,2rem)">¿Cómo funciona un agente de IA real?</h2>
+          <p style="color:var(--ink-muted);max-width:520px;margin:0.75rem auto 0">Esta demo muestra una versión simplificada. En producción, los agentes de Cognition se integran a tus sistemas existentes y operan con SLA definido.</p>
+        </div>
+        <div class="pg-how-grid">
+          <div class="pg-how-card">
+            <div class="pg-how-num">01</div>
+            <h3>Recibe la orden</h3>
+            <p>El agente interpreta la instrucción en lenguaje natural y la convierte en un plan de ejecución con pasos secuenciales o paralelos.</p>
+          </div>
+          <div class="pg-how-card">
+            <div class="pg-how-num">02</div>
+            <h3>Llama herramientas</h3>
+            <p>Cada paso invoca APIs, modelos o servicios externos: OCR, bases de datos, LLMs, ERPs. El agente orquesta todo con manejo de errores.</p>
+          </div>
+          <div class="pg-how-card">
+            <div class="pg-how-num">03</div>
+            <h3>Decide y registra</h3>
+            <p>Con el resultado en mano, toma decisiones o escala a humano. Cada acción queda en el log de auditoría con trazabilidad completa.</p>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:2.5rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+          <a href="casos.html" class="btn btn-outline btn-lg">Ver casos reales</a>
+          <a href="contacto.html" class="btn btn-primary btn-lg btn-arrow">Implementar en mi empresa</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-cta">
+        <div class="footer-cta-text">
+          <h2>¿Este agente resuelve tu problema?</h2>
+          <p>Contanos tu proceso y te armamos una propuesta técnica en 48hs.</p>
+        </div>
+        <div class="footer-cta-actions">
+          <a href="contacto.html" class="btn btn-primary btn-lg btn-arrow">Hablar con el equipo</a>
+          <a href="casos.html" class="btn btn-outline btn-lg">Ver casos reales</a>
+        </div>
+      </div>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo" aria-label="Cognition">
+            <span class="logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <g stroke="#00D4FF" stroke-width="1.6" stroke-linecap="round" fill="none">
+                  <circle cx="8" cy="8" r="1.6" fill="#00D4FF"/>
+                  <circle cx="20" cy="8" r="1.6" fill="#00D4FF"/>
+                  <circle cx="14" cy="14" r="1.6" fill="#00D4FF"/>
+                  <circle cx="8" cy="20" r="1.6" fill="#00D4FF"/>
+                  <circle cx="20" cy="20" r="1.6" fill="#00D4FF"/>
+                  <line x1="8" y1="8" x2="14" y2="14"/>
+                  <line x1="20" y1="8" x2="14" y2="14"/>
+                  <line x1="14" y1="14" x2="8" y2="20"/>
+                  <line x1="14" y1="14" x2="20" y2="20"/>
+                </g>
+              </svg>
+            </span>
+            Cognition
+          </a>
+          <p class="footer-tagline">Transformación digital con IA.<br>Córdoba, Argentina.</p>
+          <div class="footer-iso" aria-label="Certificaciones">
+            <span>ISO 9001</span><span>ISO 27001</span><span>IQNet</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Producto</div>
+          <a href="suite.html">Cognition Suite</a>
+          <a href="servicios.html">Servicios</a>
+          <a href="playground.html" aria-current="page">Agent Playground</a>
+          <a href="precios.html">Precios</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Recursos</div>
+          <a href="casos.html">Casos de éxito</a>
+          <a href="blog/index.html">Blog técnico</a>
+          <a href="industrias.html">Industrias</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Empresa</div>
+          <a href="nosotros.html">Nosotros</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="politica.html">Privacidad</a>
+          <a href="terminos.html">Términos</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Cognition Software SRL · CUIT 30-71234567-4</span>
+        <div style="display:flex;gap:1rem">
+          <a href="https://www.linkedin.com/company/cognitionhq" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+          <a href="https://www.instagram.com/cognitionsoft/" target="_blank" rel="noopener" aria-label="Instagram">ig</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/5493513841666?text=Hola%20Cognition!%20Vi%20el%20Playground%20y%20quiero%20saber%20m%C3%A1s." target="_blank" rel="noopener" class="wa-floating" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <script src="js/script.js?v=14"></script>
+  <script>
+  /* ─────────────────────────────────────────────────────
+     Agent Playground — vanilla JS
+     ───────────────────────────────────────────────────── */
+  (function () {
+    'use strict';
+
+    /* ── Scenario definitions ── */
+    const SCENARIOS = {
+      kyc: {
+        keywords: ['kyc', 'onboarding', 'banco', 'bancario', 'cuenta', 'identidad', 'dni', 'cliente', 'crédito', 'credito', 'alta de clientes'],
+        title: 'Pipeline KYC · Onboarding bancario',
+        totalTime: '~7 minutos',
+        steps: [
+          { icon: '📄', label: 'Captura de documentos', time: '12 s', desc: 'OCR de DNI frente/dorso con detección de tampering y selfie liveness check.', tools: ['GPT-4o Vision', 'Liveness SDK', 'Anti-tamper'] },
+          { icon: '🔍', label: 'Validación de identidad', time: '4 s', desc: 'Cross-check contra RENAPER y padrón AFIP en tiempo real.', tools: ['RENAPER API', 'AFIP API'] },
+          { icon: '📊', label: 'Extracción de balance', time: '8 s', desc: 'LLM estructurado lee últimos 3 balances; cross-check de coherencia automático.', tools: ['Document AI', 'LLM Extractor'] },
+          { icon: '⚖️', label: 'Scoring crediticio', time: '2 s', desc: 'Modelo ensemble: buró + señales comportamentales + variables propietarias.', tools: ['Credit Model', 'Buró API', 'Behavior Signals'] },
+          { icon: '✅', label: 'Decisión y notificación', time: '1 s', desc: 'Aprobación, rechazo o revisión manual con justificación auditable + email al cliente.', tools: ['Rules Engine', 'Notif. API', 'Audit Log'] },
+        ],
+        metrics: [
+          { val: '7 min', label: 'Alta a cuenta activa' },
+          { val: '94%', label: 'Aprobados automático' },
+          { val: '$0.18', label: 'Costo por alta' },
+          { val: '−60%', label: 'Abandono del proceso' },
+        ],
+        caseUrl: 'casos/kyc-onboarding.html',
+        caseLabel: 'Ver caso completo: Nucleo Bank →',
+      },
+      billing: {
+        keywords: ['cobranza', 'factura', 'médic', 'medic', 'obra social', 'prestacion', 'apelacion', 'apelación', 'rechazo', 'hospital', 'clinica'],
+        title: 'Agente de cobranza médica',
+        totalTime: '~13 segundos / caso',
+        steps: [
+          { icon: '📋', label: 'Clasificación de prestación', time: '3 s', desc: 'Identifica código COSEGEF, plan y cobertura aplicable a la práctica.', tools: ['LLM Classifier', 'COSEGEF DB'] },
+          { icon: '🔎', label: 'Cruce contra normativa', time: '2 s', desc: 'Verifica requisitos específicos de cada obra social para la prestación facturable.', tools: ['Rules Engine', 'OS API'] },
+          { icon: '⚠️', label: 'Detección de rechazo potencial', time: '1 s', desc: 'Modelo predictivo: probabilidad de rechazo + motivo más probable.', tools: ['Risk Model'] },
+          { icon: '📝', label: 'Generación de apelación', time: '6 s', desc: 'LLM redacta la apelación con argumentos específicos, normativa citada y antecedentes.', tools: ['GPT-4o', 'Template Engine'] },
+          { icon: '📤', label: 'Registro y seguimiento', time: '1 s', desc: 'Dashboard en tiempo real con SLA por obra social + alerta si vence plazo.', tools: ['Dashboard', 'Notif. API', 'Audit Log'] },
+        ],
+        metrics: [
+          { val: '13 s', label: 'Tiempo por caso' },
+          { val: '82%', label: 'Menos rechazos' },
+          { val: '$1.4M', label: 'Recuperado/mes' },
+          { val: '7×', label: 'Capacidad del equipo' },
+        ],
+        caseUrl: 'casos/cobranza-medica.html',
+        caseLabel: 'Ver caso completo: SaludPlus →',
+      },
+      tramites: {
+        keywords: ['trámite', 'tramite', 'gobierno', 'ministerio', 'municipio', 'expediente', 'ciudadan', 'estado', 'público', 'publico', 'gde'],
+        title: 'Digitalización de trámites gubernamentales',
+        totalTime: '3.2 días (antes: 21 días)',
+        steps: [
+          { icon: '📱', label: 'Recepción multicanal', time: '—', desc: 'Web, mobile o ventanilla digital: formulario único adaptado por tipo de trámite.', tools: ['Form Engine', 'Mobile SDK', 'Accessibility'] },
+          { icon: '🗂️', label: 'Clasificación de adjuntos', time: '8 s', desc: 'OCR multipágina + clasificación automática de documentos adjuntos por tipo y validez.', tools: ['Document AI', 'OCR Engine'] },
+          { icon: '✔️', label: 'Validación de requisitos', time: '2 s', desc: 'Verifica completitud y consistencia antes de ingresar al flujo administrativo.', tools: ['Validator', 'Rules Engine'] },
+          { icon: '🔄', label: 'Workflow auditado', time: '1 s', desc: 'Derivación automática al área responsable con trazabilidad completa en GDE.', tools: ['GDE API', 'Workflow Engine', 'Firma Digital'] },
+          { icon: '🔔', label: 'Notificaciones proactivas', time: '—', desc: 'SMS + email en cada cambio de estado. El ciudadano sabe dónde está su trámite.', tools: ['Notif. API', 'SMS Gateway'] },
+        ],
+        metrics: [
+          { val: '3.2 d', label: 'Tiempo de resolución' },
+          { val: '−92%', label: 'Menos papel' },
+          { val: '+180K', label: 'Trámites/año' },
+          { val: '4.8/5', label: 'NPS ciudadano' },
+        ],
+        caseUrl: 'casos/ministerio-tramites-digitales.html',
+        caseLabel: 'Ver caso completo: Ministerio provincial →',
+      },
+      stock: {
+        keywords: ['stock', 'inventario', 'pedido', 'demanda', 'forecast', 'deposito', 'logistic', 'quiebre', 'reposición', 'reposicion', 'compras', 'sku'],
+        title: 'Forecasting de demanda multi-depósito',
+        totalTime: 'Pronóstico en <15 s · reentrenamiento diario',
+        steps: [
+          { icon: '📥', label: 'Ingesta de datos', time: '45 s', desc: 'Ventas históricas (3 años) + clima + calendario fiscal + eventos locales por depósito.', tools: ['ETL Pipeline', 'Weather API', 'Fiscal Calendar'] },
+          { icon: '🧮', label: 'Entrenamiento del modelo', time: 'diario', desc: 'Ensemble Prophet + XGBoost: 8.200 modelos individuales por SKU × depósito.', tools: ['Prophet', 'XGBoost', 'MLflow'] },
+          { icon: '📈', label: 'Generación de pronóstico', time: '12 s', desc: 'Forecast a 30/60/90 días con intervalos de confianza por SKU y sucursal.', tools: ['Forecast Engine', 'Confidence Bands'] },
+          { icon: '🚚', label: 'Sugerencia de reposición', time: '3 s', desc: 'Orden óptima por proveedor con override humano por excepción. Integrado a SAP B1.', tools: ['Optimizer', 'SAP B1 API'] },
+          { icon: '📊', label: 'Backtest y alerta', time: 'semanal', desc: 'Métricas de error (MAPE, RMSE) publicadas al equipo de compras cada lunes.', tools: ['Dashboard', 'Email API', 'Alerting'] },
+        ],
+        metrics: [
+          { val: '−43%', label: 'Quiebres de stock' },
+          { val: '−28%', label: 'Stock muerto' },
+          { val: '88%', label: 'Precisión MAPE' },
+          { val: '$4.8M', label: 'Costo anual evitado' },
+        ],
+        caseUrl: 'casos/forecasting-demanda.html',
+        caseLabel: 'Ver caso completo: Andes Logistics →',
+      },
+      chat: {
+        keywords: ['whatsapp', 'chat', 'asistente', 'bot', 'atención', 'atencion', 'soporte', 'conversacional', 'postventa', 'post-venta', 'consulta', 'cliente'],
+        title: 'Asistente conversacional en WhatsApp',
+        totalTime: '~3.6 s por respuesta',
+        steps: [
+          { icon: '💬', label: 'Recepción del mensaje', time: '<1 s', desc: 'WhatsApp Business API oficial → webhook seguro en tiempo real, sin scraping.', tools: ['WA Business API', 'Webhook'] },
+          { icon: '🎯', label: 'Clasificación de intención', time: '0.4 s', desc: 'Identifica: tracking, cambio, reclamo, consulta de política, o escalado.', tools: ['Intent Classifier', 'Context Memory'] },
+          { icon: '🔗', label: 'Consulta al ERP', time: '1.2 s', desc: 'Recupera estado del pedido, stock disponible y políticas vigentes en tiempo real.', tools: ['ERP API', 'RAG Knowledge Base'] },
+          { icon: '✍️', label: 'Generación de respuesta', time: '1.8 s', desc: 'LLM con contexto de conversación + políticas + tono de marca + historial del cliente.', tools: ['GPT-4o', 'Brand Tone', 'Conversation Memory'] },
+          { icon: '😤', label: 'Detección de fricción', time: '0.2 s', desc: 'Sentiment score en cada turno: escalada proactiva a humano si baja el CSAT.', tools: ['Sentiment API', 'CRM Escalation'] },
+        ],
+        metrics: [
+          { val: '74%', label: 'Resueltos sin agente' },
+          { val: '4.8/5', label: 'CSAT del cliente' },
+          { val: '−61%', label: 'Tickets de soporte' },
+          { val: '3.6 s', label: 'Tiempo de respuesta' },
+        ],
+        caseUrl: 'casos/asistente-whatsapp.html',
+        caseLabel: 'Ver caso completo: ROTAR Finance →',
+      },
+      vision: {
+        keywords: ['calidad', 'defecto', 'cámara', 'camara', 'vision', 'manufactura', 'produccion', 'producción', 'fábrica', 'fabrica', 'pieza', 'línea', 'plc', 'industrial'],
+        title: 'Control de calidad por visión computacional',
+        totalTime: '180 ms de punta a punta',
+        steps: [
+          { icon: '📷', label: 'Captura en línea', time: '33 ms', desc: 'Cámara industrial Basler 4K @ 30fps, sincronizada al PLC vía trigger externo.', tools: ['Basler 4K', 'Trigger Controller'] },
+          { icon: '🧠', label: 'Inferencia on-edge', time: '140 ms', desc: 'Modelo CNN sobre NVIDIA Jetson AGX Orin. Sin latencia de red: decisión local.', tools: ['CNN Model', 'Jetson AGX Orin'] },
+          { icon: '🔴', label: 'Clasificación de defecto', time: '20 ms', desc: 'Tipo de defecto, severidad y zona marcada con bounding box. Confianza mínima configurable.', tools: ['Defect Classifier', 'Bounding Box'] },
+          { icon: '⚙️', label: 'Acción sobre PLC', time: '<1 ms', desc: 'Señal OPC-UA al Siemens PLC: descarte automático de pieza sin intervención humana.', tools: ['OPC-UA', 'Siemens PLC'] },
+          { icon: '📊', label: 'Trazabilidad y reentrenamiento', time: 'batch', desc: 'Log de cada pieza inspeccionada + etiquetado asistido para mejora mensual del modelo.', tools: ['Data Lake', 'Label Studio', 'MLflow'] },
+        ],
+        metrics: [
+          { val: '99.3%', label: 'Precisión de detección' },
+          { val: '180 ms', label: 'Latencia total' },
+          { val: '−92%', label: 'Devoluciones' },
+          { val: '0 paro', label: 'Interrupción de línea' },
+        ],
+        caseUrl: 'casos/control-calidad-vision.html',
+        caseLabel: 'Ver caso completo: Helios Pharma →',
+      },
+    };
+
+    /* Generic fallback for free-text prompts */
+    const GENERIC = {
+      title: 'Agente de automatización de procesos',
+      totalTime: 'Variable según complejidad',
+      steps: [
+        { icon: '🔍', label: 'Análisis del proceso', time: '—', desc: 'Mapeo del flujo actual: entradas, salidas, actores y puntos de fricción identificados.', tools: ['Process Mapper', 'Interview AI'] },
+        { icon: '🗂️', label: 'Captura e ingesta de datos', time: 'variable', desc: 'Conexión a las fuentes de datos existentes: ERP, APIs, documentos, formularios.', tools: ['ETL Pipeline', 'API Connector', 'OCR Engine'] },
+        { icon: '🧠', label: 'Procesamiento inteligente', time: 'variable', desc: 'Modelo específico al dominio: clasificación, extracción, predicción o generación.', tools: ['LLM / ML Model', 'Rules Engine'] },
+        { icon: '⚙️', label: 'Acción sobre sistemas', time: '<2 s', desc: 'El agente ejecuta la acción en tu sistema: escribe, notifica, aprueba o deriva.', tools: ['Action API', 'Notif. API', 'Audit Log'] },
+        { icon: '📊', label: 'Monitoreo y mejora continua', time: 'continuo', desc: 'Dashboard con métricas del agente + alertas + reentrenamiento programado.', tools: ['Observability', 'Dashboard', 'Alerting'] },
+      ],
+      metrics: [
+        { val: '−70%', label: 'Tiempo manual promedio' },
+        { val: '24/7', label: 'Disponibilidad del agente' },
+        { val: '<30d', label: 'Time-to-value' },
+        { val: 'SLA', label: 'Garantizado por contrato' },
+      ],
+      caseUrl: 'casos.html',
+      caseLabel: 'Ver todos los casos reales →',
+    };
+
+    /* ── DOM refs ── */
+    const textarea  = document.getElementById('pgTextarea');
+    const runBtn    = document.getElementById('pgRunBtn');
+    const idle      = document.getElementById('pgIdle');
+    const result    = document.getElementById('pgResult');
+
+    /* ── Example buttons ── */
+    document.querySelectorAll('.pg-example-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        textarea.value = btn.dataset.prompt;
+        textarea.focus();
+        textarea.dispatchEvent(new Event('input'));
+      });
+    });
+
+    /* ── Detect scenario ── */
+    function detectScenario(text) {
+      const lower = text.toLowerCase();
+      for (const [key, scenario] of Object.entries(SCENARIOS)) {
+        if (scenario.keywords.some(kw => lower.includes(kw))) {
+          return scenario;
+        }
+      }
+      return GENERIC;
+    }
+
+    /* ── Build step HTML ── */
+    function buildStep(step, idx) {
+      const tools = step.tools.map(t => `<span class="pg-tool-chip">${t}</span>`).join('');
+      return `
+        <div class="pg-step" data-step="${idx}" role="listitem">
+          <div class="pg-step-icon" aria-hidden="true">${step.icon}</div>
+          <div class="pg-step-body">
+            <div class="pg-step-label">
+              ${step.label}
+              <span class="pg-step-time">${step.time}</span>
+            </div>
+            <div class="pg-step-desc">${step.desc}</div>
+            <div class="pg-step-tools" aria-label="Herramientas">${tools}</div>
+          </div>
+        </div>`;
+    }
+
+    /* ── Build summary HTML ── */
+    function buildSummary(scenario) {
+      const metrics = scenario.metrics.map(m => `
+        <div class="pg-metric-card">
+          <div class="pg-metric-val">${m.val}</div>
+          <div class="pg-metric-label">${m.label}</div>
+        </div>`).join('');
+
+      return `
+        <div class="pg-summary" id="pgSummary" role="region" aria-label="Resumen de impacto">
+          <div class="pg-summary-title">📈 Impacto estimado en producción</div>
+          <div class="pg-summary-metrics">${metrics}</div>
+          <div class="pg-summary-cta">
+            <p><strong>¿Receptivo a implementarlo?</strong> Armamos la propuesta técnica en 48hs, sin compromiso.</p>
+            <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center">
+              <a href="${scenario.caseUrl}" class="btn btn-outline btn-sm">${scenario.caseLabel}</a>
+              <a href="contacto.html" class="btn btn-primary btn-arrow">Hablar con el equipo</a>
+              <button class="pg-reset-btn" id="pgResetBtn" type="button">↩ Reiniciar</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    /* ── Animate steps sequentially ── */
+    function animateSteps(steps, onDone) {
+      const stepEls = result.querySelectorAll('.pg-step');
+      let i = 0;
+      function next() {
+        if (i >= stepEls.length) { onDone(); return; }
+        const el = stepEls[i];
+        el.classList.add('visible', 'is-active');
+        if (i > 0) stepEls[i - 1].classList.remove('is-active');
+        i++;
+        setTimeout(next, 480);
+      }
+      next();
+    }
+
+    /* ── Main run function ── */
+    function runPlayground() {
+      const text = textarea.value.trim();
+      if (!text) { textarea.focus(); return; }
+
+      const scenario = detectScenario(text);
+
+      /* disable inputs */
+      runBtn.disabled = true;
+      textarea.classList.add('is-running');
+
+      /* hide idle, show result container */
+      idle.hidden = true;
+      result.hidden = false;
+      result.innerHTML = '';
+
+      /* 1. Thinking phase */
+      const thinkEl = document.createElement('div');
+      thinkEl.innerHTML = `
+        <div class="pg-thinking" role="status" aria-live="polite">
+          <div class="pg-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+          <span>Analizando tu proceso e identificando el mejor pipeline…</span>
+        </div>`;
+      result.appendChild(thinkEl);
+
+      setTimeout(() => {
+        /* 2. Replace thinking with header + steps */
+        result.innerHTML = `
+          <div class="pg-result-header">
+            <div class="pg-result-title">🤖 ${scenario.title}</div>
+            <span class="pg-status-badge thinking">Ejecutando…</span>
+          </div>
+          <div class="pg-steps" role="list" aria-label="Pasos del agente">
+            ${scenario.steps.map((s, i) => buildStep(s, i)).join('')}
+          </div>
+          ${buildSummary(scenario)}`;
+
+        /* 3. Animate steps */
+        animateSteps(scenario.steps, () => {
+          /* 4. Mark complete */
+          const badge = result.querySelector('.pg-status-badge');
+          if (badge) { badge.textContent = '✓ Completado'; badge.classList.remove('thinking'); }
+
+          /* 5. Show summary */
+          const summary = document.getElementById('pgSummary');
+          if (summary) {
+            requestAnimationFrame(() => {
+              summary.classList.add('visible');
+              summary.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+          }
+
+          /* 6. Re-enable */
+          runBtn.disabled = false;
+          textarea.classList.remove('is-running');
+
+          /* 7. Reset button */
+          const resetBtn = document.getElementById('pgResetBtn');
+          if (resetBtn) {
+            resetBtn.addEventListener('click', reset);
+          }
+        });
+
+      }, 900);
+    }
+
+    /* ── Reset ── */
+    function reset() {
+      textarea.value = '';
+      textarea.classList.remove('is-running');
+      runBtn.disabled = false;
+      result.hidden = true;
+      result.innerHTML = '';
+      idle.hidden = false;
+      textarea.focus();
+    }
+
+    /* ── Event listeners ── */
+    runBtn.addEventListener('click', runPlayground);
+
+    textarea.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        runPlayground();
+      }
+    });
+
+    /* Hint: Ctrl+Enter */
+    textarea.addEventListener('focus', () => {
+      if (!textarea.placeholder.includes('Ctrl')) {
+        textarea.placeholder = textarea.placeholder + '\n(Ctrl+Enter para ejecutar)';
+      }
+    }, { once: true });
+
+  }());
+  </script>
+</body>
+</html>

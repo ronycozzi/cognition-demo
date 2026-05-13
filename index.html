@@ -43,7 +43,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/style.css?v=12">
+  <link rel="stylesheet" href="css/style.css?v=14">
 
   <script type="application/ld+json">
   {
@@ -118,6 +118,8 @@
         <a href="casos.html">Casos</a>
         <a href="industrias.html">Industrias</a>
         <a href="nosotros.html">Nosotros</a>
+        <a href="blog/index.html">Blog</a>
+        <a href="playground.html">Playground</a>
         <a href="contacto.html" class="btn btn-primary btn-sm">Hablar con ventas</a>
       </nav>
       <button type="button" class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navMobile">
@@ -131,6 +133,8 @@
       <a href="industrias.html">Industrias</a>
       <a href="nosotros.html">Nosotros</a>
       <a href="faq.html">FAQ</a>
+      <a href="blog/index.html">Blog</a>
+      <a href="playground.html">Playground</a>
       <a href="contacto.html" class="btn btn-primary">Hablar con ventas</a>
     </nav>
   </header>
@@ -464,6 +468,77 @@
       </div>
     </section>
 
+    <!-- =================== AGENT PLAYGROUND TEASER =================== -->
+    <section class="section" aria-labelledby="playground-title" style="overflow:hidden">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Demo interactiva</span>
+          <h2 class="display" id="playground-title">Probalo vos mismo</h2>
+          <p>Describí tu proceso. El agente lo descompone en pasos, herramientas y tiempo estimado — en tiempo real.</p>
+        </div>
+
+        <!-- Mini playground preview -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:2.5rem 0 2rem;max-width:860px;margin-inline:auto">
+          <!-- Scenarios strip -->
+          <div style="background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--radius-lg);padding:1.5rem;display:flex;flex-direction:column;gap:0.875rem">
+            <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-muted)">Casos disponibles</div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem">
+              <div style="display:flex;align-items:center;gap:0.75rem;padding:0.625rem 0.875rem;background:color-mix(in srgb,var(--cyan) 8%,var(--bg));border:1px solid color-mix(in srgb,var(--cyan) 25%,transparent);border-radius:var(--radius)">
+                <span>🏦</span><span style="font-size:0.875rem;font-weight:600">KYC bancario</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.75rem;padding:0.625rem 0.875rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius)">
+                <span>🏥</span><span style="font-size:0.875rem;color:var(--ink-muted)">Cobranza médica</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.75rem;padding:0.625rem 0.875rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius)">
+                <span>🏛️</span><span style="font-size:0.875rem;color:var(--ink-muted)">Trámites gobierno</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.75rem;padding:0.625rem 0.875rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius)">
+                <span>📦</span><span style="font-size:0.875rem;color:var(--ink-muted)">Forecasting stock</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.75rem;padding:0.625rem 0.875rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius)">
+                <span>💬</span><span style="font-size:0.875rem;color:var(--ink-muted)">Asistente WhatsApp</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.75rem;padding:0.625rem 0.875rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius)">
+                <span>🔍</span><span style="font-size:0.875rem;color:var(--ink-muted)">Control de calidad</span>
+              </div>
+            </div>
+          </div>
+          <!-- Output preview mockup -->
+          <div style="background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--radius-lg);padding:1.5rem;display:flex;flex-direction:column;gap:0.75rem">
+            <div style="font-size:0.8125rem;color:var(--ink-muted);display:flex;align-items:center;gap:0.5rem">
+              <span style="width:8px;height:8px;border-radius:50%;background:var(--cyan);display:inline-block;animation:blink 1.6s ease-in-out infinite"></span>
+              Pipeline KYC · Onboarding bancario
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem">
+              <div style="display:flex;gap:0.75rem;align-items:flex-start;padding:0.625rem;background:var(--bg);border-radius:var(--radius);border:1px solid color-mix(in srgb,var(--cyan) 20%,transparent)">
+                <span>📄</span>
+                <div>
+                  <div style="font-size:0.8125rem;font-weight:700">Captura de documentos</div>
+                  <div style="font-size:0.75rem;color:var(--ink-muted)">OCR de DNI + liveness check</div>
+                </div>
+                <span style="margin-left:auto;font-size:0.6875rem;font-family:var(--mono);color:var(--cyan)">12 s</span>
+              </div>
+              <div style="display:flex;gap:0.75rem;align-items:flex-start;padding:0.625rem;background:var(--bg);border-radius:var(--radius);opacity:0.6">
+                <span>🔍</span>
+                <div style="font-size:0.8125rem;font-weight:700;color:var(--ink-muted)">Validación RENAPER + AFIP</div>
+                <span style="margin-left:auto;font-size:0.6875rem;font-family:var(--mono);color:var(--ink-muted)">4 s</span>
+              </div>
+              <div style="display:flex;gap:0.75rem;align-items:flex-start;padding:0.625rem;background:var(--bg);border-radius:var(--radius);opacity:0.35">
+                <span>📊</span>
+                <div style="font-size:0.8125rem;font-weight:700;color:var(--ink-muted)">Extracción de balance…</div>
+              </div>
+            </div>
+            <div style="font-size:0.75rem;color:var(--ink-muted);text-align:center;padding-top:0.25rem">← La secuencia completa está en el Playground</div>
+          </div>
+        </div>
+
+        <div class="section-cta">
+          <a href="playground.html" class="btn btn-primary btn-lg btn-arrow">Abrir el Playground</a>
+          <span style="color:var(--ink-muted);font-size:0.875rem">Gratis · Sin registro · Tus datos no se guardan</span>
+        </div>
+      </div>
+    </section>
+
     <!-- =================== TESTIMONIALS GRID =================== -->
     <section class="section section--soft" aria-labelledby="testimonials-title">
       <div class="container">
@@ -615,6 +690,6 @@
     </svg>
   </a>
 
-  <script src="js/script.js?v=12"></script>
+  <script src="js/script.js?v=14"></script>
 </body>
 </html>
