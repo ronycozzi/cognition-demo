@@ -19,6 +19,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     initYear();
     initHeader();
     initMobileNav();
+    initLogoBehavior();
     initBackTop();
     initReveal();
     initSmoothScroll();
@@ -56,6 +57,42 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
       if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
     }, { passive: true });
     onScroll();
+  }
+
+  /* ---------- Logo: cierra chat/nav-mobile y, si ya estamos en la misma URL,
+     hace scroll al top en vez de quedar como navegación inerte ---------- */
+  function initLogoBehavior() {
+    document.querySelectorAll('a.logo').forEach(a => {
+      a.addEventListener('click', e => {
+        const chatPanel = document.getElementById('chatPanel');
+        const chatToggle = document.getElementById('chatToggle');
+        if (chatPanel && chatPanel.classList.contains('active')) {
+          chatPanel.classList.remove('active');
+          if (chatToggle) chatToggle.setAttribute('aria-expanded', 'false');
+          try { sessionStorage.setItem('cog_chat_open', '0'); } catch (_) {}
+        }
+        const navMobile = document.getElementById('navMobile');
+        const navToggle = document.getElementById('navToggle');
+        if (navMobile && navMobile.classList.contains('active')) {
+          navMobile.classList.remove('active');
+          if (navToggle) {
+            navToggle.classList.remove('active');
+            navToggle.setAttribute('aria-expanded', 'false');
+          }
+          document.body.style.overflow = '';
+        }
+        try {
+          const url = new URL(a.href, window.location.href);
+          const samePage = url.origin === window.location.origin
+            && url.pathname === window.location.pathname
+            && !url.hash;
+          if (samePage) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+          }
+        } catch (_) {}
+      });
+    });
   }
 
   /* ---------- Mobile nav ---------- */
@@ -704,9 +741,19 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
       handleUser(val);
     });
 
-    // Restaurar estado abierto si venía abierto en la sesión
+    // Restaurar estado abierto si venía abierto en la sesión, pero NO tras un
+    // reload manual — el usuario espera "empezar de cero" al recargar.
     try {
-      if (sessionStorage.getItem('cog_chat_open') === '1') openChat();
+      let isReload = false;
+      if (performance && performance.getEntriesByType) {
+        const nav = performance.getEntriesByType('navigation')[0];
+        if (nav && nav.type === 'reload') isReload = true;
+      }
+      if (isReload) {
+        sessionStorage.setItem('cog_chat_open', '0');
+      } else if (sessionStorage.getItem('cog_chat_open') === '1') {
+        openChat();
+      }
     } catch (e) {}
   }
 
